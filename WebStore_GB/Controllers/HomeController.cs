@@ -6,7 +6,7 @@ namespace WebStore_GB.Controllers
     {
         public IActionResult Index()
         {
-            return Content("Hello from Index action");
+            return View();
         }
 
         public IActionResult Another()
