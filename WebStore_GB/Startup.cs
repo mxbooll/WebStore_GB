@@ -18,6 +18,7 @@ namespace WebStore_GB
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllersWithViews();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -27,6 +28,9 @@ namespace WebStore_GB
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseStaticFiles();
+            app.UseDefaultFiles();
+
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
@@ -35,6 +39,11 @@ namespace WebStore_GB
                 {
                     await context.Response.WriteAsync(Configuration["CustomGreetings"]);
                 });
+
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{cotroller=Home}/{action=Index}/{id?}"
+                    );
             });
         }
     }
