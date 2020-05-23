@@ -35,14 +35,14 @@ namespace WebStore_GB
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
+                endpoints.MapGet("/greetings", async context =>
                 {
                     await context.Response.WriteAsync(Configuration["CustomGreetings"]);
                 });
 
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{cotroller=Home}/{action=Index}/{id?}"
+                    pattern: "{controller=Home}/{action=Index}/{id?}"
                     );
             });
         }
