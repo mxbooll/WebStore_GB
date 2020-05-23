@@ -1,10 +1,36 @@
-﻿<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+﻿@using WebStore_GB.Models
+@model IEnumerable<Employee>
+
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-    <title>Действие Index контроллера Home</title>
+    <title>Первое приложение @ViewBag.Title</title>
 </head>
 <body>
-    <h3>Заголовок</h3>
-    <p>Первое представление!</p>
+    <h3>Сотрудники!</h3>
+    <p>Первое представление!!!</p>
+    <table>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>Фамилия</th>
+                <th>Имя</th>
+                <th>Отчество</th>
+                <th>Возраст</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var employee in Model)
+            {
+                <tr>
+                    <td>@employee.Id</td>
+                    <td>@employee.Surname</td>
+                    <td>@employee.FirstName</td>
+                    <td>@employee.Patronymic</td>
+                    <td>@employee.Age</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </body>
 </html>
