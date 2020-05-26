@@ -35,11 +35,7 @@ namespace WebStore_GB.Controllers
             },
         };
 
-        public IActionResult Index()
-        {
-            ViewBag.Title = "Hello world";
-            return View(_employees);
-        }
+        public IActionResult Index() => View();
 
         public IActionResult Another()
         {
