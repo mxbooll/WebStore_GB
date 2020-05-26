@@ -1,15 +1,4 @@
-﻿@using WebStore_GB.Models
-@model Employee
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>EmployeeDetails</title>
-</head>
-<body>
-
+﻿<div class="container">
     <h1>Информация о сотруднике id:@Model.Id</h1>
 
     <p>Фамилия: @Model.Surname</p>
@@ -19,6 +8,4 @@
 
     <hr />
     <a href="/Home/Index">К списку сотрудников</a>
-
-</body>
-</html>
+</div>
