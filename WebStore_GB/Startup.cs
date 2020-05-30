@@ -41,12 +41,12 @@ namespace WebStore_GB
 
             app.UseWelcomePage("/MVC");
 
-            app.Use(async (context, next) =>
-            {
-                Debug.WriteLine($"Request to {context.Request.Path}");
-                await next(); // Прерывание конвейера не вызывая await next()
-                // постобработка
-            });
+            //app.Use(async (context, next) =>
+            //{
+            //    Debug.WriteLine($"Request to {context.Request.Path}");
+            //    await next(); // Прерывание конвейера не вызывая await next()
+            //    // постобработка
+            //});
             //app.UseMiddleware<>()
 
             app.UseRouting();
