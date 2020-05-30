@@ -1,58 +1,25 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
-using WebStore_GB.Models;
 
 namespace WebStore_GB.Controllers
 {
     public class HomeController : Controller
     {
-        private static readonly List<Employee> _employees = new List<Employee>
-        {
-            new Employee
-            {
-                Id = 1,
-                Surname = "Иванов",
-                FirstName = "Иван",
-                Patronymic = "Иванович",
-                Age = 50
-            },
-            new Employee
-            {
-                Id = 2,
-                Surname = "Петров",
-                FirstName = "Пётр",
-                Patronymic = "Петрович",
-                Age = 25
-            },
-            new Employee
-            {
-                Id = 3,
-                Surname = "Сидоров",
-                FirstName = "Сидор",
-                Patronymic = "Сидорович",
-                Age = 30
-            },
-        };
+        public IActionResult Index() => View();
+        
+        public IActionResult Blog() => View();
 
-        public IActionResult Index()
-        {
-            ViewBag.Title = "Hello world";
-            return View(_employees);
-        }
+        public IActionResult BlogSingle() => View();
 
-        public IActionResult Another()
-        {
-            return Content("Hello from Another action");
-        }
+        public IActionResult Cart() => View();
 
-        public IActionResult EmployeeDetails(int id)
-        {
-            var employee = _employees.FirstOrDefault(e => e.Id == id);
-            if (employee is null)
-                return NotFound();
+        public IActionResult CheckOut() => View();
 
-            return View(employee);
-        }
+        public IActionResult ContactUs() => View();
+
+        public IActionResult Login() => View();
+
+        public IActionResult ProductDetails() => View();
+
+        public IActionResult Shop() => View();
     }
 }
