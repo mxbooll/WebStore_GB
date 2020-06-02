@@ -51,6 +51,11 @@ namespace WebStore_GB.Controllers
         {
             if (model is null) { throw new ArgumentNullException(nameof(model)); }
 
+            if (model.Name == "123" && model.Surname == "QWE")
+            {
+                ModelState.AddModelError(string.Empty, "Странное сочетание имени и фамилии");
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(model);
