@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebStore_GB.Infrastructure.Interfaces;
-using WebStore_GB.Infrastructure.Interfaces.Services;
+using WebStore_GB.Infrastructure.Services;
 
 namespace WebStore_GB
 {
