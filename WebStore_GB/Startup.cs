@@ -28,6 +28,7 @@ namespace WebStore_GB
                 .AddRazorRuntimeCompilation();
 
             services.AddSingleton<IEmployeesData, InMemoryEmployeesData>();
+            services.AddSingleton<IProductData, InMemoryProductData>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
