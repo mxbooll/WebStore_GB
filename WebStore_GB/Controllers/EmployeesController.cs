@@ -47,20 +47,30 @@ namespace WebStore_GB.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(EmployeeViewModel Model)
+        public IActionResult Edit(EmployeeViewModel model)
         {
-            if (Model is null) { throw new ArgumentNullException(nameof(Model)); }
+            if (model is null) { throw new ArgumentNullException(nameof(model)); }
+
+            if (model.Name == "123" && model.Surname == "QWE")
+            {
+                ModelState.AddModelError(string.Empty, "Странное сочетание имени и фамилии");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
 
             var employee = new Employee
             {
-                Id = Model.Id,
-                FirstName = Model.Name,
-                Surname = Model.Surname,
-                Patronymic = Model.Patronymic,
-                Age = Model.Age
+                Id = model.Id,
+                FirstName = model.Name,
+                Surname = model.Surname,
+                Patronymic = model.Patronymic,
+                Age = model.Age
             };
 
-            if (Model.Id == 0) { _employeesData.Add(employee); }
+            if (model.Id == 0) { _employeesData.Add(employee); }
             else { _employeesData.Edit(employee); }
 
             _employeesData.SaveChanges();
