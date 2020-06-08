@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WebStore_GB.Domain\WebStore_GB.Domain.csproj" />
+    <ProjectReference Include="..\WevStore_GB.DAL\WevStore_GB.DAL.csproj" />
   </ItemGroup>
 
 </Project>

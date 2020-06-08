@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using WebStore_GB.Infrastructure.Interfaces;
 using WebStore_GB.Infrastructure.Services;
+using WevStore_GB.DAL.Context;
 
 namespace WebStore_GB
 {
@@ -19,6 +21,10 @@ namespace WebStore_GB
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<WebStoreDB>(opt =>
+               opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+
             services.AddControllersWithViews(opt =>
             {
                 //opt.Filters.Add<>()
