@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebStore_GB.Data;
 using WebStore_GB.Infrastructure.Interfaces;
 using WebStore_GB.Infrastructure.Services;
 using WevStore_GB.DAL.Context;
@@ -35,6 +36,7 @@ namespace WebStore_GB
 
             services.AddSingleton<IEmployeesData, InMemoryEmployeesData>();
             services.AddSingleton<IProductData, InMemoryProductData>();
+            services.AddTransient<WebStoreDBInitializer>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
