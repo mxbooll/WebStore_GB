@@ -26,20 +26,23 @@ namespace WebStore_GB
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<WebStoreDB>(opt =>
-               opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddTransient<WebStoreDBInitializer>();
 
 
             services.AddControllersWithViews()
-                .AddRazorRuntimeCompilation();
+               .AddRazorRuntimeCompilation();
 
             services.AddSingleton<IEmployeesData, InMemoryEmployeesData>();
+
             //services.AddSingleton<IProductData, InMemoryProductData>();
             services.AddScoped<IProductData, SqlProductData>();
-            services.AddTransient<WebStoreDBInitializer>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WebStoreDBInitializer db)
         {
+            db.Initialize();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -54,7 +57,7 @@ namespace WebStore_GB
             //app.Use(async (context, next) =>
             //{
             //    Debug.WriteLine($"Request to {context.Request.Path}");
-            //    await next(); // Прерывание конвейера не вызывая await next()
+            //    await next(); // Можем прервать конвейер не вызывая await next()
             //    // постобработка
             //});
             //app.UseMiddleware<>()
