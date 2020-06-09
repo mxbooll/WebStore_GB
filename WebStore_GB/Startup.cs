@@ -7,7 +7,10 @@ using Microsoft.Extensions.Hosting;
 using WebStore_GB.Data;
 using WebStore_GB.Infrastructure.Interfaces;
 using WebStore_GB.Infrastructure.Services;
+using WebStore_GB.Infrastructure.Services.InMemory;
+using WebStore_GB.Infrastructure.Services.InSQL;
 using WevStore_GB.DAL.Context;
+using static WebStore_GB.Infrastructure.Services.InSQL.SqlProductData;
 
 namespace WebStore_GB
 {
@@ -26,16 +29,12 @@ namespace WebStore_GB
                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
 
-            services.AddControllersWithViews(opt =>
-            {
-                //opt.Filters.Add<>()
-                //opt.Conventions
-                //opt.Conventions.Add();
-            })
+            services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
 
             services.AddSingleton<IEmployeesData, InMemoryEmployeesData>();
-            services.AddSingleton<IProductData, InMemoryProductData>();
+            //services.AddSingleton<IProductData, InMemoryProductData>();
+            services.AddScoped<IProductData, SqlProductData>();
             services.AddTransient<WebStoreDBInitializer>();
         }
 
