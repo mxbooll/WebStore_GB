@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using WebStore_GB.Domain.Entities.Employees;
 using WebStore_GB.Infrastructure.Interfaces;
-using WebStore_GB.Models;
 using WebStore_GB.ViewModels;
 
 namespace WebStore_GB.Controllers
@@ -19,7 +19,7 @@ namespace WebStore_GB.Controllers
 
         public IActionResult EmployeeDetails(int id)
         {
-            var employee = _employeesData.GetById(id);
+            Employee employee = _employeesData.GetById(id);
             if (employee is null)
                 return NotFound();
 

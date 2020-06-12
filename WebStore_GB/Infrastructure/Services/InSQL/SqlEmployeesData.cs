@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using WebStore_GB.Domain.Entities.Employees;
 using WebStore_GB.Infrastructure.Interfaces;
-using WebStore_GB.Models;
 using WevStore_GB.DAL.Context;
 
 namespace WebStore_GB.Infrastructure.Services.InSQL

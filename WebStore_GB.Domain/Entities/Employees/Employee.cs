@@ -1,4 +1,4 @@
-﻿namespace WebStore_GB.Models
+﻿namespace WebStore_GB.Domain.Entities.Employees
 {
     public class Employee
     {
