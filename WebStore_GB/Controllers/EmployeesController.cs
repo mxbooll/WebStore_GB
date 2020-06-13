@@ -6,6 +6,9 @@ using WebStore_GB.ViewModels;
 
 namespace WebStore_GB.Controllers
 {
+    //[Route("NewRoute/[controller]/123")]
+    //[Route("Staff")]
+    //[Authorize]
     public class EmployeesController : Controller
     {
         private readonly IEmployeesData _employeesData;
@@ -15,8 +18,11 @@ namespace WebStore_GB.Controllers
             _employeesData = employeesData ?? throw new System.ArgumentNullException(nameof(employeesData));
         }
 
+        //[Route("List")]
         public IActionResult Index() => View(_employeesData.Get());
 
+        //[Route("{id}")]
+        //[Authorize]
         public IActionResult EmployeeDetails(int id)
         {
             Employee employee = _employeesData.GetById(id);

@@ -9,11 +9,8 @@ using System;
 using WebStore_GB.Data;
 using WebStore_GB.Domain.Entities.Identity;
 using WebStore_GB.Infrastructure.Interfaces;
-using WebStore_GB.Infrastructure.Services;
-using WebStore_GB.Infrastructure.Services.InMemory;
 using WebStore_GB.Infrastructure.Services.InSQL;
 using WevStore_GB.DAL.Context;
-using static WebStore_GB.Infrastructure.Services.InSQL.SqlProductData;
 
 namespace WebStore_GB
 {
@@ -87,6 +84,8 @@ namespace WebStore_GB
 
             app.UseStaticFiles();
             app.UseDefaultFiles();
+
+            app.UseAuthentication();
 
             app.UseWelcomePage("/MVC");
 
