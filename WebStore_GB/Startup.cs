@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using WebStore_GB.Data;
+using WebStore_GB.Domain.Entities.Identity;
 using WebStore_GB.Infrastructure.Interfaces;
-using WebStore_GB.Infrastructure.Services;
-using WebStore_GB.Infrastructure.Services.InMemory;
 using WebStore_GB.Infrastructure.Services.InSQL;
 using WevStore_GB.DAL.Context;
-using static WebStore_GB.Infrastructure.Services.InSQL.SqlProductData;
 
 namespace WebStore_GB
 {
@@ -18,10 +18,7 @@ namespace WebStore_GB
     {
         private IConfiguration Configuration { get; }
 
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        public Startup(IConfiguration configuration) => Configuration = configuration;
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -29,11 +26,47 @@ namespace WebStore_GB
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<WebStoreDBInitializer>();
 
+            services.AddIdentity<User, Role>(/*opt => { }*/)
+              .AddEntityFrameworkStores<WebStoreDB>()
+              .AddDefaultTokenProviders();
+
+            services.Configure<IdentityOptions>(opt =>
+            {
+#if DEBUG
+                opt.Password.RequiredLength = 3;
+                opt.Password.RequireDigit = false;
+                opt.Password.RequireLowercase = false;
+                opt.Password.RequireUppercase = false;
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequiredUniqueChars = 3;
+
+                //opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCD1234567890";
+                opt.User.RequireUniqueEmail = false;
+#endif
+
+                opt.Lockout.AllowedForNewUsers = true;
+                opt.Lockout.MaxFailedAccessAttempts = 10;
+                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
+            });
+
+            services.ConfigureApplicationCookie(opt =>
+            {
+                opt.Cookie.Name = "WebStore.GeekBrains.ru";
+                opt.Cookie.HttpOnly = true;
+                opt.ExpireTimeSpan = TimeSpan.FromDays(10);
+
+                opt.LoginPath = "/Account/Login";
+                opt.LogoutPath = "/Account/Logout";
+                opt.AccessDeniedPath = "/Account/AccessDenied";
+
+                opt.SlidingExpiration = true;
+            });
 
             services.AddControllersWithViews()
                .AddRazorRuntimeCompilation();
 
-            services.AddSingleton<IEmployeesData, InMemoryEmployeesData>();
+            services.AddScoped<IEmployeesData, SqlEmployeesData>();
+            //services.AddSingleton<IEmployeesData, InMemoryEmployeesData>();
 
             //services.AddSingleton<IProductData, InMemoryProductData>();
             services.AddScoped<IProductData, SqlProductData>();
@@ -51,6 +84,8 @@ namespace WebStore_GB
 
             app.UseStaticFiles();
             app.UseDefaultFiles();
+
+            app.UseAuthentication();
 
             app.UseWelcomePage("/MVC");
 

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using WebStore_GB.Domain.Entities;
-using WebStore_GB.Models;
+using WebStore_GB.Domain.Entities.Employees;
 
 namespace WebStore_GB.Data
 {
