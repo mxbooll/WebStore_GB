@@ -1,10 +1,16 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebStore_GB.Data;
 using WebStore_GB.Infrastructure.Interfaces;
 using WebStore_GB.Infrastructure.Services;
+using WebStore_GB.Infrastructure.Services.InMemory;
+using WebStore_GB.Infrastructure.Services.InSQL;
+using WevStore_GB.DAL.Context;
+using static WebStore_GB.Infrastructure.Services.InSQL.SqlProductData;
 
 namespace WebStore_GB
 {
@@ -19,20 +25,24 @@ namespace WebStore_GB
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllersWithViews(opt =>
-            {
-                //opt.Filters.Add<>()
-                //opt.Conventions
-                //opt.Conventions.Add();
-            })
-                .AddRazorRuntimeCompilation();
+            services.AddDbContext<WebStoreDB>(opt =>
+                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddTransient<WebStoreDBInitializer>();
+
+
+            services.AddControllersWithViews()
+               .AddRazorRuntimeCompilation();
 
             services.AddSingleton<IEmployeesData, InMemoryEmployeesData>();
-            services.AddSingleton<IProductData, InMemoryProductData>();
+
+            //services.AddSingleton<IProductData, InMemoryProductData>();
+            services.AddScoped<IProductData, SqlProductData>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WebStoreDBInitializer db)
         {
+            db.Initialize();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -47,7 +57,7 @@ namespace WebStore_GB
             //app.Use(async (context, next) =>
             //{
             //    Debug.WriteLine($"Request to {context.Request.Path}");
-            //    await next(); // Прерывание конвейера не вызывая await next()
+            //    await next(); // Можем прервать конвейер не вызывая await next()
             //    // постобработка
             //});
             //app.UseMiddleware<>()
