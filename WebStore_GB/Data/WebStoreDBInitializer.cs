@@ -101,8 +101,8 @@ namespace WebStore_GB.Data
             if (!await _RoleManager.RoleExistsAsync(Role.ADMINISTRATOR))
                 await _RoleManager.CreateAsync(new Role { Name = Role.ADMINISTRATOR});
 
-            if (!await _RoleManager.RoleExistsAsync(Role.User))
-                await _RoleManager.CreateAsync(new Role { Name = Role.User });
+            if (!await _RoleManager.RoleExistsAsync(Role.USER))
+                await _RoleManager.CreateAsync(new Role { Name = Role.USER });
 
             if (await _UserManager.FindByNameAsync(User.ADMINISTRATOR) is null)
             {
