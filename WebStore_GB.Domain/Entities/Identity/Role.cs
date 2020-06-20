@@ -5,5 +5,6 @@ namespace WebStore_GB.Domain.Entities.Identity
     public class Role : IdentityRole
     {
         public const string ADMINISTRATOR = "Administrators";
+        public const string User = "User";
     }
 }
