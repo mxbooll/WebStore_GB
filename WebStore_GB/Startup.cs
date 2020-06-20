@@ -9,6 +9,7 @@ using System;
 using WebStore_GB.Data;
 using WebStore_GB.Domain.Entities.Identity;
 using WebStore_GB.Infrastructure.Interfaces;
+using WebStore_GB.Infrastructure.Services.InCookies;
 using WebStore_GB.Infrastructure.Services.InSQL;
 using WevStore_GB.DAL.Context;
 
