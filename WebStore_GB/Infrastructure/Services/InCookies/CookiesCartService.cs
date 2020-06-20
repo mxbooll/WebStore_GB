@@ -2,7 +2,9 @@
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using WebStore_GB.Domain.Entities;
 using WebStore_GB.Infrastructure.Interfaces;
+using WebStore_GB.Infrastructure.Mapping;
 using WebStore_GB.Models;
 using WebStore_GB.ViewModels;
 
@@ -95,6 +97,19 @@ namespace WebStore_GB.Infrastructure.Services.InCookies
             Cart = cart;
         }
 
-        public CartViewModel TransformFromCart() { throw new NotImplementedException(); }
+        public CartViewModel TransformFromCart()
+        {
+            var products = _productData.GetProducts(new ProductFilter
+            {
+                Ids = Cart.Items.Select(item => item.ProductId).ToArray()
+            });
+
+            var product_view_models = products.ToView().ToDictionary(p => p.Id);
+
+            return new CartViewModel
+            {
+                Items = Cart.Items.Select(item => (product_view_models[item.ProductId], item.Quantity))
+            };
+        }
     }
 }
