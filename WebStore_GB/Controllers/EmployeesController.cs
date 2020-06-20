@@ -2,6 +2,7 @@
 using System;
 using WebStore_GB.Domain.Entities.Employees;
 using WebStore_GB.Infrastructure.Interfaces;
+using WebStore_GB.Infrastructure.Mapping;
 using WebStore_GB.ViewModels;
 
 namespace WebStore_GB.Controllers
@@ -42,14 +43,7 @@ namespace WebStore_GB.Controllers
             var employee = _employeesData.GetById((int)Id);
             if (employee is null) { return NotFound(); }
 
-            return View(new EmployeeViewModel
-            {
-                Id = employee.Id,
-                Surname = employee.Surname,
-                Name = employee.FirstName,
-                Patronymic = employee.Patronymic,
-                Age = employee.Age
-            });
+            return View(employee.ToView());
         }
 
         [HttpPost]
@@ -67,14 +61,7 @@ namespace WebStore_GB.Controllers
                 return View(model);
             }
 
-            var employee = new Employee
-            {
-                Id = model.Id,
-                FirstName = model.Name,
-                Surname = model.Surname,
-                Patronymic = model.Patronymic,
-                Age = model.Age
-            };
+            var employee = model.FromView();
 
             if (model.Id == 0) { _employeesData.Add(employee); }
             else { _employeesData.Edit(employee); }
@@ -93,14 +80,7 @@ namespace WebStore_GB.Controllers
             var employee = _employeesData.GetById(id);
             if (employee is null) { return NotFound(); }
 
-            return View(new EmployeeViewModel
-            {
-                Id = employee.Id,
-                Surname = employee.Surname,
-                Name = employee.FirstName,
-                Patronymic = employee.Patronymic,
-                Age = employee.Age
-            });
+            return View(employee.ToView());
         }
 
         [HttpPost]
