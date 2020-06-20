@@ -84,9 +84,7 @@ namespace WebStore_GB
 
             app.UseStaticFiles();
             app.UseDefaultFiles();
-
-            app.UseAuthentication();
-
+                        
             app.UseWelcomePage("/MVC");
 
             //app.Use(async (context, next) =>
@@ -98,6 +96,9 @@ namespace WebStore_GB
             //app.UseMiddleware<>()
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
