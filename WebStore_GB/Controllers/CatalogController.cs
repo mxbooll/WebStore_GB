@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using WebStore_GB.Domain.Entities;
 using WebStore_GB.Infrastructure.Interfaces;
@@ -13,7 +14,7 @@ namespace WebStore_GB.Controllers
 
         public CatalogController(IProductData productData) => _productData = productData;
 
-        public IActionResult Shop(int? SectionId, int? BrandId)
+        public IActionResult Shop(int? SectionId, int? BrandId, [FromServices] IMapper mapper)
         {
             var filter = new ProductFilter
             {
@@ -28,7 +29,9 @@ namespace WebStore_GB.Controllers
                 SectionId = SectionId,
                 BrandId = BrandId,
                 Products = products
-                    .ToView()
+                    .Select(mapper.Map<ProductViewModel>)
+                    //.Select(p => Mapper.Map<ProductViewModel>(p))
+                    //.ToView()
                     .OrderBy(p => p.Order)
             });
         }
