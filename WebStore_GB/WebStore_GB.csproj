@@ -28,4 +28,9 @@
     <ProjectReference Include="..\WevStore_GB.DAL\WevStore_GB.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Areas\Admin\Models\" />
+  </ItemGroup>
+
 </Project>

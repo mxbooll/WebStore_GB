@@ -86,7 +86,7 @@ namespace WebStore_GB
 
             app.UseStaticFiles();
             app.UseDefaultFiles();
-                        
+
             app.UseWelcomePage("/MVC");
 
             //app.Use(async (context, next) =>
@@ -104,6 +104,11 @@ namespace WebStore_GB
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(
+                    name: "areas",
+                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                );
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}"
