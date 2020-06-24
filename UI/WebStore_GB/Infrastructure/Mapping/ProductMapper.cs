@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using WebStore_GB.Domain.Entities;
-using WebStore_GB.ViewModels;
+using WebStore_GB.Domain.ViewModels;
 
 namespace WebStore_GB.Infrastructure.Mapping
 {

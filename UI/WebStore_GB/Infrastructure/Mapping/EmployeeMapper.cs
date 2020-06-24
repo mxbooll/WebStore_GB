@@ -1,5 +1,5 @@
 ﻿using WebStore_GB.Domain.Entities.Employees;
-using WebStore_GB.ViewModels;
+using WebStore_GB.Domain.ViewModels;
 
 namespace WebStore_GB.Infrastructure.Mapping
 {

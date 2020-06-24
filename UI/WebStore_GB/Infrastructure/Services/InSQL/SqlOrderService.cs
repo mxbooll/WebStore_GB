@@ -6,8 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebStore_GB.Domain.Entities.Identity;
 using WebStore_GB.Domain.Entities.Orders;
+using WebStore_GB.Domain.ViewModels;
 using WebStore_GB.Infrastructure.Interfaces;
-using WebStore_GB.ViewModels;
 using WevStore_GB.DAL.Context;
 
 namespace WebStore_GB.Infrastructure.Services.InSQL

@@ -3,12 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebStore_GB.Domain.ViewModels;
 using WebStore_GB.Infrastructure.Interfaces;
-using WebStore_GB.ViewModels;
 
 namespace WebStore_GB.Components
 {
-     public class SectionsViewComponent : ViewComponent
+    public class SectionsViewComponent : ViewComponent
     {
         private readonly IProductData _ProductData;
 

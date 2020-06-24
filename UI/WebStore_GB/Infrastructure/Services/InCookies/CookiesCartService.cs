@@ -3,10 +3,10 @@ using Newtonsoft.Json;
 using System;
 using System.Linq;
 using WebStore_GB.Domain.Entities;
+using WebStore_GB.Domain.Models;
+using WebStore_GB.Domain.ViewModels;
 using WebStore_GB.Infrastructure.Interfaces;
 using WebStore_GB.Infrastructure.Mapping;
-using WebStore_GB.Models;
-using WebStore_GB.ViewModels;
 
 namespace WebStore_GB.Infrastructure.Services.InCookies
 {

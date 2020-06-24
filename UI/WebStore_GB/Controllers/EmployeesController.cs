@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using WebStore_GB.Domain.Entities.Employees;
 using WebStore_GB.Domain.Entities.Identity;
+using WebStore_GB.Domain.ViewModels;
 using WebStore_GB.Infrastructure.Interfaces;
 using WebStore_GB.Infrastructure.Mapping;
-using WebStore_GB.ViewModels;
 
 namespace WebStore_GB.Controllers
 {
