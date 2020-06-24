@@ -7,10 +7,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using WebStore_GB.Clients.Values;
 using WebStore_GB.Data;
 using WebStore_GB.Domain.Entities.Identity;
 using WebStore_GB.Infrastructure.AutoMapperProfiles;
 using WebStore_GB.Interfaces.Services;
+using WebStore_GB.Interfaces.TestApi;
 using WebStore_GB.Services.Products.InCookies;
 using WebStore_GB.Services.Products.InSQL;
 using WevStore_GB.DAL.Context;
@@ -80,6 +82,8 @@ namespace WebStore_GB
             services.AddScoped<IProductData, SqlProductData>();
             services.AddScoped<ICartService, CookiesCartService>();
             services.AddScoped<IOrderService, SqlOrderService>();
+
+            services.AddTransient<IValueService, ValuesClient>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WebStoreDBInitializer db)
