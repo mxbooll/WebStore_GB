@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using WebStore_GB.Domain.Entities.Employees;
 
-namespace WebStore_GB.Infrastructure.Interfaces
+namespace WebStore_GB.Interfaces.Services
 {
     public interface IEmployeesData
     {

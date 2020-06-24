@@ -4,7 +4,7 @@ using System.Linq;
 using WebStore_GB.Domain.Entities;
 using WebStore_GB.Domain.ViewModels;
 
-namespace WebStore_GB.Infrastructure.Mapping
+namespace WebStore_GB.Services.Mapping
 {
     public static class ProductMapper
     {

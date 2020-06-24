@@ -1,7 +1,7 @@
 ﻿using WebStore_GB.Domain.Entities.Employees;
 using WebStore_GB.Domain.ViewModels;
 
-namespace WebStore_GB.Infrastructure.Mapping
+namespace WebStore_GB.Services.Mapping
 {
     public static class EmployeeMapper
     {

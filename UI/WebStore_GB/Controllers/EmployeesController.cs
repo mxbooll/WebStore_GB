@@ -5,8 +5,8 @@ using System;
 using WebStore_GB.Domain.Entities.Employees;
 using WebStore_GB.Domain.Entities.Identity;
 using WebStore_GB.Domain.ViewModels;
-using WebStore_GB.Infrastructure.Interfaces;
-using WebStore_GB.Infrastructure.Mapping;
+using WebStore_GB.Interfaces.Services;
+using WebStore_GB.Services.Mapping;
 
 namespace WebStore_GB.Controllers
 {

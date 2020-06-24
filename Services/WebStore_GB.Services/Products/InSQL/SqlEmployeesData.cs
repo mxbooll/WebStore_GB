@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using WebStore_GB.Domain.Entities.Employees;
-using WebStore_GB.Infrastructure.Interfaces;
+using WebStore_GB.Interfaces.Services;
 using WevStore_GB.DAL.Context;
 
-namespace WebStore_GB.Infrastructure.Services.InSQL
+namespace WebStore_GB.Services.Products.InSQL
 {
     public class SqlEmployeesData : IEmployeesData
     {

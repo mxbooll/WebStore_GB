@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WebStore_GB.Domain.Entities;
 using WebStore_GB.Domain.Entities.Identity;
-using WebStore_GB.Infrastructure.Interfaces;
+using WebStore_GB.Interfaces.Services;
 
 namespace WebStore_GB.Areas.Admin.Controllers
 {

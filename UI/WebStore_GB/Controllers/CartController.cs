@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using WebStore_GB.Domain.ViewModels;
-using WebStore_GB.Infrastructure.Interfaces;
+using WebStore_GB.Interfaces.Services;
 
 namespace WebStore_GB.Controllers
 {

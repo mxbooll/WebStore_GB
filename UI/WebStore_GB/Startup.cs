@@ -10,9 +10,9 @@ using System;
 using WebStore_GB.Data;
 using WebStore_GB.Domain.Entities.Identity;
 using WebStore_GB.Infrastructure.AutoMapperProfiles;
-using WebStore_GB.Infrastructure.Interfaces;
-using WebStore_GB.Infrastructure.Services.InCookies;
-using WebStore_GB.Infrastructure.Services.InSQL;
+using WebStore_GB.Interfaces.Services;
+using WebStore_GB.Services.Products.InCookies;
+using WebStore_GB.Services.Products.InSQL;
 using WevStore_GB.DAL.Context;
 
 namespace WebStore_GB
