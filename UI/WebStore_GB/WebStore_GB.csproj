@@ -9,10 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\css\site.css" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="9.0.0" />
     <PackageReference Include="AutoMapper.Collection.EntityFrameworkCore" Version="1.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
@@ -27,11 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WebStore_GB.Domain\WebStore_GB.Domain.csproj" />
-    <ProjectReference Include="..\WevStore_GB.DAL\WevStore_GB.DAL.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
   </ItemGroup>
@@ -42,6 +33,11 @@
     <None Include="wwwroot\Admin\js\bootstrap.min.js" />
     <None Include="wwwroot\Admin\js\custom.js" />
     <None Include="wwwroot\Admin\js\jquery-1.10.2.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\WebStore_GB.Domain\WebStore_GB.Domain.csproj" />
+    <ProjectReference Include="..\..\Services\WevStore_GB.DAL\WevStore_GB.DAL.csproj" />
   </ItemGroup>
 
 </Project>
