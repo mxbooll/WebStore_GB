@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using WebStore_GB.Data;
 using WebStore_GB.Domain.Entities.Identity;
+using WebStore_GB.Infrastructure.AutoMapperProfiles;
 using WebStore_GB.Infrastructure.Interfaces;
 using WebStore_GB.Infrastructure.Services.InCookies;
 using WebStore_GB.Infrastructure.Services.InSQL;
@@ -23,6 +25,11 @@ namespace WebStore_GB
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(cfg =>
+            {
+                cfg.AddProfile<ViewModelsMapping>();
+            }, typeof(Startup));
+
             services.AddDbContext<WebStoreDB>(opt =>
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<WebStoreDBInitializer>();
@@ -72,6 +79,7 @@ namespace WebStore_GB
             //services.AddSingleton<IProductData, InMemoryProductData>();
             services.AddScoped<IProductData, SqlProductData>();
             services.AddScoped<ICartService, CookiesCartService>();
+            services.AddScoped<IOrderService, SqlOrderService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WebStoreDBInitializer db)
@@ -86,7 +94,7 @@ namespace WebStore_GB
 
             app.UseStaticFiles();
             app.UseDefaultFiles();
-                        
+
             app.UseWelcomePage("/MVC");
 
             //app.Use(async (context, next) =>
@@ -104,6 +112,11 @@ namespace WebStore_GB
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(
+                    name: "areas",
+                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                );
+
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}"
