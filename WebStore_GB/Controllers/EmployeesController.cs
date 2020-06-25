@@ -1,14 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using WebStore_GB.Domain.Entities.Employees;
+using WebStore_GB.Domain.Entities.Identity;
 using WebStore_GB.Infrastructure.Interfaces;
+using WebStore_GB.Infrastructure.Mapping;
 using WebStore_GB.ViewModels;
 
 namespace WebStore_GB.Controllers
 {
     //[Route("NewRoute/[controller]/123")]
     //[Route("Staff")]
-    //[Authorize]
+    [Authorize]
     public class EmployeesController : Controller
     {
         private readonly IEmployeesData _employeesData;
@@ -33,6 +36,7 @@ namespace WebStore_GB.Controllers
         }
 
         #region Редактирование
+        [Authorize(Roles = Role.ADMINISTRATOR)]
         public IActionResult Edit(int? Id)
         {
             if (Id is null) { return View(new EmployeeViewModel()); }
@@ -42,17 +46,11 @@ namespace WebStore_GB.Controllers
             var employee = _employeesData.GetById((int)Id);
             if (employee is null) { return NotFound(); }
 
-            return View(new EmployeeViewModel
-            {
-                Id = employee.Id,
-                Surname = employee.Surname,
-                Name = employee.FirstName,
-                Patronymic = employee.Patronymic,
-                Age = employee.Age
-            });
+            return View(employee.ToView());
         }
 
         [HttpPost]
+        [Authorize(Roles = Role.ADMINISTRATOR)]
         public IActionResult Edit(EmployeeViewModel model)
         {
             if (model is null) { throw new ArgumentNullException(nameof(model)); }
@@ -67,14 +65,7 @@ namespace WebStore_GB.Controllers
                 return View(model);
             }
 
-            var employee = new Employee
-            {
-                Id = model.Id,
-                FirstName = model.Name,
-                Surname = model.Surname,
-                Patronymic = model.Patronymic,
-                Age = model.Age
-            };
+            var employee = model.FromView();
 
             if (model.Id == 0) { _employeesData.Add(employee); }
             else { _employeesData.Edit(employee); }
@@ -86,6 +77,7 @@ namespace WebStore_GB.Controllers
         #endregion
 
         #region Удаление
+        [Authorize(Roles = Role.ADMINISTRATOR)]
         public IActionResult Delete(int id)
         {
             if (id <= 0) { return BadRequest(); }
@@ -93,17 +85,11 @@ namespace WebStore_GB.Controllers
             var employee = _employeesData.GetById(id);
             if (employee is null) { return NotFound(); }
 
-            return View(new EmployeeViewModel
-            {
-                Id = employee.Id,
-                Surname = employee.Surname,
-                Name = employee.FirstName,
-                Patronymic = employee.Patronymic,
-                Age = employee.Age
-            });
+            return View(employee.ToView());
         }
 
         [HttpPost]
+        [Authorize(Roles = Role.ADMINISTRATOR)]
         public IActionResult DeleteConfirmed(int id)
         {
             _employeesData.Delete(id);
