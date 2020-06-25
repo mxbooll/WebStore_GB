@@ -338,9 +338,9 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
-/WebStore_GB/wwwroot/lib
-/WebStore_GB/wwwroot/js/site.min.js
-/WebStore_GB/wwwroot/js/site.min.js.gz
-/WebStore_GB/wwwroot/js/site.js
-/WebStore_GB/wwwroot/css/site.css
-/WebStore_GB/wwwroot/css/site.min.css
+/UI/WebStore_GB/wwwroot/lib
+/UI/WebStore_GB/wwwroot/js/site.min.js
+/UI/WebStore_GB/wwwroot/js/site.min.js.gz
+/UI/WebStore_GB/wwwroot/js/site.js
+/UI/WebStore_GB/wwwroot/css/site.css
+/UI/WebStore_GB/wwwroot/css/site.min.css
