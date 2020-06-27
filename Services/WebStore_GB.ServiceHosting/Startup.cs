@@ -24,6 +24,8 @@ namespace WebStore_GB.ServiceHosting
             services.AddTransient<WebStoreDBInitializer>();
 
             services.AddControllers();
+
+            services.AddScoped<IEmployeesData, SqlEmployeesData>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WebStoreDBInitializer db)
