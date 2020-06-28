@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using WebStore_GB.Domain.DTO.Products;
 using WebStore_GB.Domain.Entities;
 using WebStore_GB.Interfaces.Services;
+using WebStore_GB.Services.Mapping;
 using WevStore_GB.DAL.Context;
 
 namespace WebStore_GB.Services.Products.InSQL
@@ -17,7 +19,7 @@ namespace WebStore_GB.Services.Products.InSQL
 
         public IEnumerable<Brand> GetBrands() => _db.Brands;
 
-        public IEnumerable<Product> GetProducts(ProductFilter Filter = null)
+        public IEnumerable<ProductDTO> GetProducts(ProductFilter Filter = null)
         {
             IQueryable<Product> query = _db.Products;
 
@@ -32,13 +34,14 @@ namespace WebStore_GB.Services.Products.InSQL
                     query = query.Where(product => product.SectionId == Filter.SectionId);
             }
 
-            return query;
+            return query.Select(p => p.ToDTO());
         }
 
-        public Product GetProductById(int id) => _db.Products
+        public ProductDTO GetProductById(int id) => _db.Products
            .Include(p => p.Section)
            .Include(p => p.Brand)
-           .FirstOrDefault(p => p.Id == id);
+           .FirstOrDefault(p => p.Id == id)
+           .ToDTO();
     }
 }
 

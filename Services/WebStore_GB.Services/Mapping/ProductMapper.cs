@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using WebStore_GB.Domain.DTO.Products;
 using WebStore_GB.Domain.Entities;
 using WebStore_GB.Domain.ViewModels;
 
@@ -20,9 +20,31 @@ namespace WebStore_GB.Services.Mapping
 
         public static IEnumerable<ProductViewModel> ToView(this IEnumerable<Product> p) => p.Select(ToView);
 
-        internal static Func<Product, int, object> ToView()
-        {
-            throw new NotImplementedException();
-        }
+        public static ProductDTO ToDTO(this Product p) => p is null
+            ? null
+            : new ProductDTO
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Order = p.Order,
+                Price = p.Price,
+                ImageUrl = p.ImageUrl,
+                Barnd = p.Brand.ToDTO(),
+                Section = p.Section.ToDTO()
+            };
+
+        public static Product FromDTO(this ProductDTO p) => p is null
+            ? null
+            : new Product
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Order = p.Order,
+                Price = p.Price,
+                ImageUrl = p.ImageUrl,
+                BrandId = p.Barnd?.Id,
+                Brand = p.Barnd.FromDTO(),
+                Section = p.Section.FromDTO()
+            };
     }
 }
