@@ -8,7 +8,7 @@ namespace WebStore_GB.Interfaces.Services
     {
         IEnumerable<Section> GetSections();
         IEnumerable<Brand> GetBrands();
-        IEnumerable<ProductDTO> GetProducts(ProductFilter Filter = null);
+        IEnumerable<ProductDTO> GetProducts(ProductFilter filter = null);
         ProductDTO GetProductById(int id);
     }
 }
