@@ -10,11 +10,11 @@ namespace WebStore_GB.ServiceHosting.Controllers
     //[Route("api/employees")]
     [Route(WebApi.EMPLOYEES)]
     [ApiController]
-    public class EmployeesApiController1 : ControllerBase, IEmployeesData
+    public class EmployeesApiController : ControllerBase, IEmployeesData
     {
         private readonly IEmployeesData _employeesData;
 
-        public EmployeesApiController1(IEmployeesData employeesData) => _employeesData = employeesData;
+        public EmployeesApiController(IEmployeesData employeesData) => _employeesData = employeesData;
 
         [HttpGet]
         public IEnumerable<Employee> Get() => _employeesData.Get();
@@ -23,14 +23,28 @@ namespace WebStore_GB.ServiceHosting.Controllers
         public Employee GetById(int id) => _employeesData.GetById(id);
 
         [HttpPost]
-        public int Add([FromBody] Employee Employee) => _employeesData.Add(Employee);
+        public int Add([FromBody] Employee Employee)
+        {
+            var id = _employeesData.Add(Employee);
+            SaveChanges();
+            return id;
+        }
 
         [HttpPut]
-        public void Edit(Employee Employee) => _employeesData.Edit(Employee);
+        public void Edit(Employee Employee)
+        {
+            _employeesData.Edit(Employee);
+            SaveChanges();
+        }
 
         //[HttpDelete("delete/{id}")] //http://localhost:5001/api/employees/delete/15
         [HttpDelete("{id}")]
-        public bool Delete(int id) => _employeesData.Delete(id);
+        public bool Delete(int id)
+        {
+            var succes = _employeesData.Delete(id);
+            SaveChanges();
+            return succes;
+        }
 
         //[HttpGet("Test/{Start}-{Stop}")] //http://localhost:5001/api/employees/Test/2005.05.07-2007.08.09
         //public ActionResult Test(DateTime Start, DateTime Stop) => Ok();
