@@ -2,6 +2,7 @@
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace WebStore_GB.Clients.Base
@@ -27,30 +28,30 @@ namespace WebStore_GB.Clients.Base
 
         public T Get<T>(string url) => GetAsync<T>(url).Result;
 
-        public async Task<T> GetAsync<T>(string url)
+        public async Task<T> GetAsync<T>(string url, CancellationToken cancel = default)
         {
-            var response = await _client.GetAsync(url);
-            return await response.EnsureSuccessStatusCode().Content.ReadAsAsync<T>();
+            var response = await _client.GetAsync(url, cancel);
+            return await response.EnsureSuccessStatusCode().Content.ReadAsAsync<T>(cancel);
         }
 
         public HttpResponseMessage Post<T>(string url, T item) => PostAsync<T>(url, item).Result;
 
-        public async Task<HttpResponseMessage> PostAsync<T>(string url, T item)
+        public async Task<HttpResponseMessage> PostAsync<T>(string url, T item, CancellationToken cancel = default)
         {
-            var response = await _client.PostAsJsonAsync(url, item);
+            var response = await _client.PostAsJsonAsync(url, item, cancel);
             return response.EnsureSuccessStatusCode();
         }
 
         public HttpResponseMessage Put<T>(string url, T item) => PutAsync<T>(url, item).Result;
 
-        public async Task<HttpResponseMessage> PutAsync<T>(string url, T item)
+        public async Task<HttpResponseMessage> PutAsync<T>(string url, T item, CancellationToken cancel = default)
         {
-            var response = await _client.PutAsJsonAsync(url, item);
+            var response = await _client.PutAsJsonAsync(url, item, cancel);
             return response.EnsureSuccessStatusCode();
         }
 
         public HttpResponseMessage Delete(string url) => DeleteAsync(url).Result;
 
-        public async Task<HttpResponseMessage> DeleteAsync(string url) => await _client.DeleteAsync(url);
+        public async Task<HttpResponseMessage> DeleteAsync(string url, CancellationToken cancel = default) => await _client.DeleteAsync(url, cancel);
     }
 }
