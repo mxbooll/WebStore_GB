@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using WebStore_GB.Clients.Employees;
 using WebStore_GB.Clients.Values;
 using WebStore_GB.Data;
 using WebStore_GB.Domain.Entities.Identity;
@@ -75,7 +76,8 @@ namespace WebStore_GB
             services.AddControllersWithViews()
                .AddRazorRuntimeCompilation();
 
-            services.AddScoped<IEmployeesData, SqlEmployeesData>();
+            services.AddScoped<IEmployeesData, EmployeesClient>();
+            //services.AddScoped<IEmployeesData, SqlEmployeesData>();
             //services.AddSingleton<IEmployeesData, InMemoryEmployeesData>();
 
             //services.AddSingleton<IProductData, InMemoryProductData>();

@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using WebStore_GB.Domain.Entities.Identity;
 using WebStore_GB.Interfaces.Services;
 using WebStore_GB.Services.Data;
 using WebStore_GB.Services.Products.InSQL;
@@ -22,6 +24,10 @@ namespace WebStore_GB.ServiceHosting
             services.AddDbContext<WebStoreDB>(opt =>
                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<WebStoreDBInitializer>();
+
+            services.AddIdentity<User, Role>()
+              .AddEntityFrameworkStores<WebStoreDB>()
+              .AddDefaultTokenProviders();
 
             services.AddControllers();
 
