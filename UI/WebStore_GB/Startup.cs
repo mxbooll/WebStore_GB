@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using WebStore_GB.Clients.Employees;
+using WebStore_GB.Clients.Orders;
 using WebStore_GB.Clients.Products;
 using WebStore_GB.Clients.Values;
 using WebStore_GB.Data;
@@ -85,7 +86,8 @@ namespace WebStore_GB
             //services.AddScoped<IProductData, SqlProductData>();
             services.AddScoped<IProductData, ProductsClient>();
             services.AddScoped<ICartService, CookiesCartService>();
-            services.AddScoped<IOrderService, SqlOrderService>();
+            services.AddScoped<IOrderService, OrdersClient>();
+            //services.AddScoped<IOrderService, SqlOrderService>();
 
             services.AddTransient<IValueService, ValuesClient>();
         }
