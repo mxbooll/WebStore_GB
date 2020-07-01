@@ -21,6 +21,6 @@ namespace WebStore_GB.Clients.Orders
 
         public async Task<OrderDTO> GetOrderById(int id) => await GetAsync<OrderDTO>($"{_serviceAddress}/{id}");
 
-        public async Task<IEnumerable<OrderDTO>> GetUserOrders(string userName) => await GetAsync<IEnumerable<OrderDTO>>($"{_serviceAddress}/{userName}");
+        public async Task<IEnumerable<OrderDTO>> GetUserOrders(string userName) => await GetAsync<IEnumerable<OrderDTO>>($"{_serviceAddress}/user/{userName}");
     }
 }
