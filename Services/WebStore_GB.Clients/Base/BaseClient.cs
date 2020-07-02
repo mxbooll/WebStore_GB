@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace WebStore_GB.Clients.Base
 {
-    public abstract class BaseClient
+    public abstract class BaseClient : IDisposable
     {
         protected readonly HttpClient _client;
         protected readonly string _serviceAddress;
@@ -53,5 +53,26 @@ namespace WebStore_GB.Clients.Base
         public HttpResponseMessage Delete(string url) => DeleteAsync(url).Result;
 
         public async Task<HttpResponseMessage> DeleteAsync(string url, CancellationToken cancel = default) => await _client.DeleteAsync(url, cancel);
+
+        #region IDisposable
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        //~BaseClient() => Dispose(false); // замедляет выполнение приложения, использовать только при наличии неуправляемых ресурсов.
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // финализация управляемых ресурсов (вызываем Dispose у всего у чего сможем)
+                _client.Dispose();
+            }
+
+            // финализация неуправляемых ресурсов (например неуправляемой памяти)
+        }
+        #endregion
     }
 }
