@@ -20,6 +20,9 @@ namespace WebStore_GB.ServiceHosting.Controllers
             _roleStore = new RoleStore<Role>(db);
         }
 
+        [HttpGet("all")] // api/roles/all
+        public async Task<IEnumerable<Role>> GetAllRoles() => await _roleStore.Roles.ToArrayAsync();
+
         [HttpPost]
         public async Task<bool> CreateAsync(Role role)
         {
