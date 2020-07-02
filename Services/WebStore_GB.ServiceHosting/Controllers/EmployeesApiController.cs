@@ -6,6 +6,9 @@ using WebStore_GB.Interfaces.Services;
 
 namespace WebStore_GB.ServiceHosting.Controllers
 {
+    /// <summary>
+    /// Управление сотрудниками
+    /// </summary>
     //[Route("api/[controller]")]
     //[Route("api/employees")]
     [Route(WebApi.EMPLOYEES)]
@@ -16,12 +19,26 @@ namespace WebStore_GB.ServiceHosting.Controllers
 
         public EmployeesApiController(IEmployeesData employeesData) => _employeesData = employeesData;
 
+        /// <summary>
+        /// Получить всех сотрудников.
+        /// </summary>
+        /// <returns> Перечисление сотрудников магазина. </returns>
         [HttpGet]
         public IEnumerable<Employee> Get() => _employeesData.Get();
 
+        /// <summary>
+        /// Получить сотрудника по его идентификатору.
+        /// </summary>
+        /// <param name="id"> Числовой идентификатор сотрудника. </param>
+        /// <returns> Сотрудник с указанным идентификатором. </returns>
         [HttpGet("{id}")]
         public Employee GetById(int id) => _employeesData.GetById(id);
 
+        /// <summary>
+        /// Добавление нового сотрудника.
+        /// </summary>
+        /// <param name="Employee"> Добавляемый сотрудник. </param>
+        /// <returns> Идентификатор, добавленного сотрудника. </returns>
         [HttpPost]
         public int Add([FromBody] Employee Employee)
         {
@@ -30,6 +47,10 @@ namespace WebStore_GB.ServiceHosting.Controllers
             return id;
         }
 
+        /// <summary>
+        /// Редактирование данных сотрудника.
+        /// </summary>
+        /// <param name="Employee"> Редактируемый сотрудник. </param>
         [HttpPut]
         public void Edit(Employee Employee)
         {
@@ -37,6 +58,11 @@ namespace WebStore_GB.ServiceHosting.Controllers
             SaveChanges();
         }
 
+        /// <summary>
+        /// Удаление сотрудника по его идентификатору.
+        /// </summary>
+        /// <param name="id"> Идентификатор, удаляемого сотрудника. </param>
+        /// <returns> Истина, если сотрудник присутствовал и был удален. </returns>
         //[HttpDelete("delete/{id}")] //http://localhost:5001/api/employees/delete/15
         [HttpDelete("{id}")]
         public bool Delete(int id)
@@ -49,6 +75,7 @@ namespace WebStore_GB.ServiceHosting.Controllers
         //[HttpGet("Test/{Start}-{Stop}")] //http://localhost:5001/api/employees/Test/2005.05.07-2007.08.09
         //public ActionResult Test(DateTime Start, DateTime Stop) => Ok();
 
+        [NonAction]
         public void SaveChanges() => _employeesData.SaveChanges();
     }
 }

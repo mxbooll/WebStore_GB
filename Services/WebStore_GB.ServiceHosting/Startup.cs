@@ -5,7 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using System;
+using System.IO;
+using System.Net;
 using WebStore_GB.Domain.Entities.Identity;
 using WebStore_GB.Interfaces.Services;
 using WebStore_GB.Services.Data;
@@ -55,6 +58,30 @@ namespace WebStore_GB.ServiceHosting
                 .AddScoped<IEmployeesData, SqlEmployeesData>()
                 .AddScoped<IProductData, SqlProductData>()
                 .AddScoped<IOrderService, SqlOrderService>();
+
+            #region Swagger
+
+            services.AddSwaggerGen(opt =>
+                {
+                    opt.SwaggerDoc("v1", new OpenApiInfo { Title = "WebStore_GB.API", Version = "v1" });
+
+                    // подключить файлы откуда swagger будет получать информацию.
+                    const string WEB_API_XML = "WebStore_GB.ServiceHosting.xml";
+                    const string WEB_DOMAIN_XML = "WebStore_GB.Domain.xml";
+                    const string DEBUG_PATH = "bin/debug/netcoreapp3.1";
+
+                    opt.IncludeXmlComments(WEB_API_XML);
+                    if (File.Exists(WEB_DOMAIN_XML))
+                    {
+                        opt.IncludeXmlComments(WEB_DOMAIN_XML);
+                    }
+                    else if (File.Exists(Path.Combine(DEBUG_PATH, WEB_DOMAIN_XML)))
+                    {
+                        opt.IncludeXmlComments(Path.Combine(DEBUG_PATH, WEB_DOMAIN_XML));
+                    }
+                }); 
+
+            #endregion
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WebStoreDBInitializer db)
@@ -69,6 +96,19 @@ namespace WebStore_GB.ServiceHosting
             app.UseRouting();
 
             app.UseAuthorization();
+
+            #region Swagger
+
+            app.UseSwagger();
+            app.UseSwaggerUI(opt => 
+            {
+                // путь, где будет находится документ с техническим описанием вебапи
+                opt.SwaggerEndpoint("/swagger/v1/swagger.json", "WebStore_GB.API");
+                // путь по которому обратиться к swagger, если string.Empty, то адрес будет "/"
+                opt.RoutePrefix = string.Empty;
+            });
+
+            #endregion
 
             app.UseEndpoints(endpoints =>
             {
