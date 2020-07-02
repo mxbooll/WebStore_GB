@@ -32,7 +32,7 @@ namespace WebStore_GB
                 cfg.AddProfile<ViewModelsMapping>();
             }, typeof(Startup));
 
-            services.AddIdentity<User, Role>(/*opt => { }*/)          
+            services.AddIdentity<User, Role>()          
               .AddDefaultTokenProviders();
 
             #region WebApi Identity clients stores
@@ -60,7 +60,6 @@ namespace WebStore_GB
                 opt.Password.RequireNonAlphanumeric = false;
                 opt.Password.RequiredUniqueChars = 3;
 
-                //opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCD1234567890";
                 opt.User.RequireUniqueEmail = false;
 #endif
 
@@ -86,16 +85,9 @@ namespace WebStore_GB
                .AddRazorRuntimeCompilation();
 
             services.AddScoped<IEmployeesData, EmployeesClient>();
-            //services.AddScoped<IEmployeesData, SqlEmployeesData>();
-            //services.AddSingleton<IEmployeesData, InMemoryEmployeesData>();
-
-            //services.AddSingleton<IProductData, InMemoryProductData>();
-            //services.AddScoped<IProductData, SqlProductData>();
             services.AddScoped<IProductData, ProductsClient>();
             services.AddScoped<ICartService, CookiesCartService>();
             services.AddScoped<IOrderService, OrdersClient>();
-            //services.AddScoped<IOrderService, SqlOrderService>();
-
             services.AddTransient<IValueService, ValuesClient>();
         }
 
@@ -111,14 +103,6 @@ namespace WebStore_GB
             app.UseDefaultFiles();
 
             app.UseWelcomePage("/MVC");
-
-            //app.Use(async (context, next) =>
-            //{
-            //    Debug.WriteLine($"Request to {context.Request.Path}");
-            //    await next(); // Можем прервать конвейер не вызывая await next()
-            //    // постобработка
-            //});
-            //app.UseMiddleware<>()
 
             app.UseRouting();
 
