@@ -2,12 +2,13 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Security.Claims;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using WebStore_GB.Clients.Base;
 using WebStore_GB.Domain;
+using WebStore_GB.Domain.DTO.Identity;
 using WebStore_GB.Domain.Entities.Identity;
 using WebStore_GB.Interfaces.Services.Identity;
 
@@ -17,204 +18,357 @@ namespace WebStore_GB.Clients.Identity
     {
         public UsersClient(IConfiguration configuration) : base(configuration, WebApi.Identity.USERS) { }
 
-        public Task AddClaimsAsync(User user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
+        #region Implementation of IUserStore<User>
+
+        public async Task<string> GetUserIdAsync(User user, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await (await PostAsync($"{_serviceAddress}/UserId", user, cancel))
+               .Content
+               .ReadAsAsync<string>(cancel)
+               .ConfigureAwait(false);
         }
 
-        public Task AddLoginAsync(User user, UserLoginInfo login, CancellationToken cancellationToken)
+        public async Task<string> GetUserNameAsync(User user, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await (await PostAsync($"{_serviceAddress}/UserName", user, cancel))
+               .Content
+               .ReadAsAsync<string>(cancel)
+               .ConfigureAwait(false);
         }
 
-        public Task AddToRoleAsync(User user, string roleName, CancellationToken cancellationToken)
+        public async Task SetUserNameAsync(User user, string name, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            user.UserName = name;
+            await PostAsync($"{_serviceAddress}/UserName/{name}", user, cancel);
         }
 
-        public Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken)
+        public async Task<string> GetNormalizedUserNameAsync(User user, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await (await PostAsync($"{_serviceAddress}/NormalUserName/", user, cancel))
+               .Content
+               .ReadAsAsync<string>(cancel)
+               .ConfigureAwait(false);
         }
 
-        public Task<IdentityResult> DeleteAsync(User user, CancellationToken cancellationToken)
+        public async Task SetNormalizedUserNameAsync(User user, string name, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            user.NormalizedUserName = name;
+            await PostAsync($"{_serviceAddress}/NormalUserName/{name}", user, cancel);
         }
 
-        public Task<User> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken)
+        public async Task<IdentityResult> CreateAsync(User user, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            var creationSuccess = await (await PostAsync($"{_serviceAddress}/User", user, cancel))
+               .Content
+               .ReadAsAsync<bool>(cancel);
+
+            return creationSuccess
+                ? IdentityResult.Success
+                : IdentityResult.Failed();
         }
 
-        public Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
+        public async Task<IdentityResult> UpdateAsync(User user, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await (await PutAsync($"{_serviceAddress}/User", user, cancel))
+               .Content
+               .ReadAsAsync<bool>(cancel)
+                ? IdentityResult.Success
+                : IdentityResult.Failed();
         }
 
-        public Task<User> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
+        public async Task<IdentityResult> DeleteAsync(User user, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await (await PostAsync($"{_serviceAddress}/User/Delete", user, cancel))
+               .Content
+               .ReadAsAsync<bool>(cancel)
+                ? IdentityResult.Success
+                : IdentityResult.Failed();
         }
 
-        public Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+        public async Task<User> FindByIdAsync(string id, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await GetAsync<User>($"{_serviceAddress}/User/Find/{id}", cancel);
         }
 
-        public Task<IList<Claim>> GetClaimsAsync(User user, CancellationToken cancellationToken)
+        public async Task<User> FindByNameAsync(string name, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await GetAsync<User>($"{_serviceAddress}/User/Normal/{name}", cancel);
         }
 
-        public Task<string> GetEmailAsync(User user, CancellationToken cancellationToken)
+        #endregion
+
+        #region Implementation of IUserRoleStore<User>
+
+        public async Task AddToRoleAsync(User user, string role, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            await PostAsync($"{_serviceAddress}/Role/{role}", user, cancel);
         }
 
-        public Task<bool> GetEmailConfirmedAsync(User user, CancellationToken cancellationToken)
+        public async Task RemoveFromRoleAsync(User user, string role, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            await PostAsync($"{_serviceAddress}/Role/Delete/{role}", user, cancel);
         }
 
-        public Task<IList<UserLoginInfo>> GetLoginsAsync(User user, CancellationToken cancellationToken)
+        public async Task<IList<string>> GetRolesAsync(User user, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await (await PostAsync($"{_serviceAddress}/roles", user, cancel))
+               .Content
+               .ReadAsAsync<IList<string>>(cancel);
         }
 
-        public Task<string> GetNormalizedEmailAsync(User user, CancellationToken cancellationToken)
+        public async Task<bool> IsInRoleAsync(User user, string role, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await (await PostAsync($"{_serviceAddress}/InRole/{role}", user, cancel))
+               .Content
+               .ReadAsAsync<bool>(cancel);
         }
 
-        public Task<string> GetNormalizedUserNameAsync(User user, CancellationToken cancellationToken)
+        public async Task<IList<User>> GetUsersInRoleAsync(string role, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await GetAsync<List<User>>($"{_serviceAddress}/UsersInRole/{role}", cancel);
         }
 
-        public Task<string> GetPasswordHashAsync(User user, CancellationToken cancellationToken)
+        #endregion
+
+        #region Implementation of IUserPasswordStore<User>
+
+        public async Task SetPasswordHashAsync(User user, string hash, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            user.PasswordHash = hash;
+            await PostAsync(
+                $"{_serviceAddress}/SetPasswordHash", new PasswordHashDTO { User = user, Hash = hash },
+                cancel);
         }
 
-        public Task<string> GetPhoneNumberAsync(User user, CancellationToken cancellationToken)
+        public async Task<string> GetPasswordHashAsync(User user, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await (await PostAsync($"{_serviceAddress}/GetPasswordHash", user, cancel))
+               .Content
+               .ReadAsAsync<string>(cancel);
         }
 
-        public Task<bool> GetPhoneNumberConfirmedAsync(User user, CancellationToken cancellationToken)
+        public async Task<bool> HasPasswordAsync(User user, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await (await PostAsync($"{_serviceAddress}/HasPassword", user, cancel))
+               .Content
+               .ReadAsAsync<bool>(cancel);
         }
 
-        public Task<IList<string>> GetRolesAsync(User user, CancellationToken cancellationToken)
+        #endregion
+
+        #region Implementation of IUserEmailStore<User>
+
+        public async Task SetEmailAsync(User user, string email, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            user.Email = email;
+            await PostAsync($"{_serviceAddress}/SetEmail/{email}", user, cancel);
         }
 
-        public Task<bool> GetTwoFactorEnabledAsync(User user, CancellationToken cancellationToken)
+        public async Task<string> GetEmailAsync(User user, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await (await PostAsync($"{_serviceAddress}/GetEmail", user, cancel))
+               .Content
+               .ReadAsAsync<string>(cancel);
         }
 
-        public Task<string> GetUserIdAsync(User user, CancellationToken cancellationToken)
+        public async Task<bool> GetEmailConfirmedAsync(User user, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await (await PostAsync($"{_serviceAddress}/GetEmailConfirmed", user, cancel))
+               .Content
+               .ReadAsAsync<bool>(cancel);
         }
 
-        public Task<string> GetUserNameAsync(User user, CancellationToken cancellationToken)
+        public async Task SetEmailConfirmedAsync(User user, bool confirmed, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            user.EmailConfirmed = confirmed;
+            await PostAsync($"{_serviceAddress}/SetEmailConfirmed/{confirmed}", user, cancel);
         }
 
-        public Task<IList<User>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken)
+        public async Task<User> FindByEmailAsync(string email, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await GetAsync<User>($"{_serviceAddress}/User/FindByEmail/{email}", cancel);
         }
 
-        public Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
+        public async Task<string> GetNormalizedEmailAsync(User user, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await (await PostAsync($"{_serviceAddress}/User/GetNormalizedEmail", user, cancel))
+               .Content
+               .ReadAsAsync<string>(cancel);
         }
 
-        public Task<bool> HasPasswordAsync(User user, CancellationToken cancellationToken)
+        public async Task SetNormalizedEmailAsync(User user, string email, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            user.NormalizedEmail = email;
+            await PostAsync($"{_serviceAddress}/SetNormalizedEmail/{email}", user, cancel);
         }
 
-        public Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken cancellationToken)
+        #endregion
+
+        #region Implementation of IUserPhoneNumberStore<User>
+
+        public async Task SetPhoneNumberAsync(User user, string phone, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            user.PhoneNumber = phone;
+            await PostAsync($"{_serviceAddress}/SetPhoneNumber/{phone}", user, cancel);
         }
 
-        public Task RemoveClaimsAsync(User user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
+        public async Task<string> GetPhoneNumberAsync(User user, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await (await PostAsync($"{_serviceAddress}/GetPhoneNumber", user, cancel))
+               .Content
+               .ReadAsAsync<string>(cancel);
         }
 
-        public Task RemoveFromRoleAsync(User user, string roleName, CancellationToken cancellationToken)
+        public async Task<bool> GetPhoneNumberConfirmedAsync(User user, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await (await PostAsync($"{_serviceAddress}/GetPhoneNumberConfirmed", user, cancel))
+               .Content
+               .ReadAsAsync<bool>(cancel);
         }
 
-        public Task RemoveLoginAsync(User user, string loginProvider, string providerKey, CancellationToken cancellationToken)
+        public async Task SetPhoneNumberConfirmedAsync(User user, bool confirmed, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            user.PhoneNumberConfirmed = confirmed;
+            await PostAsync($"{_serviceAddress}/SetPhoneNumberConfirmed/{confirmed}", user, cancel);
         }
 
-        public Task ReplaceClaimAsync(User user, Claim claim, Claim newClaim, CancellationToken cancellationToken)
+        #endregion
+
+        #region Implementation of IUserLoginStore<User>
+
+        public async Task AddLoginAsync(User user, UserLoginInfo login, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            await PostAsync($"{_serviceAddress}/AddLogin", new AddLoginDTO { User = user, UserLoginInfo = login }, cancel);
         }
 
-        public Task SetEmailAsync(User user, string email, CancellationToken cancellationToken)
+        public async Task RemoveLoginAsync(User user, string LoginProvider, string ProviderKey, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            await PostAsync($"{_serviceAddress}/RemoveLogin/{LoginProvider}/{ProviderKey}", user, cancel);
         }
 
-        public Task SetEmailConfirmedAsync(User user, bool confirmed, CancellationToken cancellationToken)
+        public async Task<IList<UserLoginInfo>> GetLoginsAsync(User user, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await (await PostAsync($"{_serviceAddress}/GetLogins", user, cancel))
+               .Content
+               .ReadAsAsync<List<UserLoginInfo>>(cancel);
         }
 
-        public Task SetNormalizedEmailAsync(User user, string normalizedEmail, CancellationToken cancellationToken)
+        public async Task<User> FindByLoginAsync(string LoginProvider, string ProviderKey, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await GetAsync<User>($"{_serviceAddress}/User/FindByLogin/{LoginProvider}/{ProviderKey}", cancel);
         }
 
-        public Task SetNormalizedUserNameAsync(User user, string normalizedName, CancellationToken cancellationToken)
+        #endregion
+
+        #region Implementation of IUserLockoutStore<User>
+
+        public async Task<DateTimeOffset?> GetLockoutEndDateAsync(User user, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await (await PostAsync($"{_serviceAddress}/GetLockoutEndDate", user, cancel))
+               .Content
+               .ReadAsAsync<DateTimeOffset?>(cancel);
         }
 
-        public Task SetPasswordHashAsync(User user, string passwordHash, CancellationToken cancellationToken)
+        public async Task SetLockoutEndDateAsync(User user, DateTimeOffset? EndDate, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            user.LockoutEnd = EndDate;
+            await PostAsync(
+                $"{_serviceAddress}/SetLockoutEndDate",
+                new SetLockoutDTO { User = user, LockoutEnd = EndDate },
+                cancel);
         }
 
-        public Task SetPhoneNumberAsync(User user, string phoneNumber, CancellationToken cancellationToken)
+        public async Task<int> IncrementAccessFailedCountAsync(User user, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await (await PostAsync($"{_serviceAddress}/IncrementAccessFailedCount", user, cancel))
+               .Content
+               .ReadAsAsync<int>(cancel);
         }
 
-        public Task SetPhoneNumberConfirmedAsync(User user, bool confirmed, CancellationToken cancellationToken)
+        public async Task ResetAccessFailedCountAsync(User user, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            await PostAsync($"{_serviceAddress}/ResetAccessFailedCont", user, cancel);
         }
 
-        public Task SetTwoFactorEnabledAsync(User user, bool enabled, CancellationToken cancellationToken)
+        public async Task<int> GetAccessFailedCountAsync(User user, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await (await PostAsync($"{_serviceAddress}/GetAccessFailedCount", user, cancel))
+               .Content
+               .ReadAsAsync<int>(cancel);
         }
 
-        public Task SetUserNameAsync(User user, string userName, CancellationToken cancellationToken)
+        public async Task<bool> GetLockoutEnabledAsync(User user, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            return await (await PostAsync($"{_serviceAddress}/GetLockoutEnabled", user, cancel))
+               .Content
+               .ReadAsAsync<bool>(cancel);
         }
 
-        public Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken)
+        public async Task SetLockoutEnabledAsync(User user, bool enabled, CancellationToken cancel)
         {
-            throw new NotImplementedException();
+            user.LockoutEnabled = enabled;
+            await PostAsync($"{_serviceAddress}/SetLockoutEnabled/{enabled}", user, cancel);
         }
+
+        #endregion
+
+        #region Implementation of IUserTwoFactorStore<User>
+
+        public async Task SetTwoFactorEnabledAsync(User user, bool enabled, CancellationToken cancel)
+        {
+            user.TwoFactorEnabled = enabled;
+            await PostAsync($"{_serviceAddress}/SetTwoFactor/{enabled}", user, cancel);
+        }
+
+        public async Task<bool> GetTwoFactorEnabledAsync(User user, CancellationToken cancel)
+        {
+            return await (await PostAsync($"{_serviceAddress}/GetTwoFactorEnabled", user, cancel))
+               .Content
+               .ReadAsAsync<bool>(cancel);
+        }
+
+        #endregion
+
+        #region Implementation of IUserClaimStore<User>
+
+        public async Task<IList<Claim>> GetClaimsAsync(User user, CancellationToken cancel)
+        {
+            return await (await PostAsync($"{_serviceAddress}/GetClaims", user, cancel))
+               .Content
+               .ReadAsAsync<List<Claim>>(cancel);
+        }
+
+        public async Task AddClaimsAsync(User user, IEnumerable<Claim> claims, CancellationToken cancel)
+        {
+            await PostAsync(
+                $"{_serviceAddress}/AddClaims",
+                new AddClaimDTO { User = user, Claims = claims },
+                cancel);
+        }
+
+        public async Task ReplaceClaimAsync(User user, Claim OldClaim, Claim NewClaim, CancellationToken cancel)
+        {
+            await PostAsync(
+                $"{_serviceAddress}/ReplaceClaim",
+                new ReplaceClaimDTO { User = user, Claim = OldClaim, NewClaim = NewClaim },
+                cancel);
+        }
+
+        public async Task RemoveClaimsAsync(User user, IEnumerable<Claim> claims, CancellationToken cancel)
+        {
+            await PostAsync(
+                $"{_serviceAddress}/RemoveClaims",
+                new RemoveClaimDTO { User = user, Claims = claims },
+                cancel);
+        }
+
+        public async Task<IList<User>> GetUsersForClaimAsync(Claim claim, CancellationToken cancel)
+        {
+            return await (await PostAsync($"{_serviceAddress}/GetUsersForClaim", claim, cancel))
+               .Content
+               .ReadAsAsync<List<User>>(cancel);
+        }
+
+        #endregion
     }
 }
