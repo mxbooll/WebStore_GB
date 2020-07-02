@@ -2,7 +2,6 @@ using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,14 +11,11 @@ using WebStore_GB.Clients.Identity;
 using WebStore_GB.Clients.Orders;
 using WebStore_GB.Clients.Products;
 using WebStore_GB.Clients.Values;
-using WebStore_GB.Data;
 using WebStore_GB.Domain.Entities.Identity;
 using WebStore_GB.Infrastructure.AutoMapperProfiles;
 using WebStore_GB.Interfaces.Services;
 using WebStore_GB.Interfaces.TestApi;
 using WebStore_GB.Services.Products.InCookies;
-using WebStore_GB.Services.Products.InSQL;
-using WevStore_GB.DAL.Context;
 
 namespace WebStore_GB
 {
@@ -36,12 +32,7 @@ namespace WebStore_GB
                 cfg.AddProfile<ViewModelsMapping>();
             }, typeof(Startup));
 
-            services.AddDbContext<WebStoreDB>(opt =>
-                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            //services.AddTransient<WebStoreDBInitializer>();
-
-            services.AddIdentity<User, Role>(/*opt => { }*/)
-              //.AddEntityFrameworkStores<WebStoreDB>()
+            services.AddIdentity<User, Role>(/*opt => { }*/)          
               .AddDefaultTokenProviders();
 
             #region WebApi Identity clients stores
@@ -108,10 +99,8 @@ namespace WebStore_GB
             services.AddTransient<IValueService, ValuesClient>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env/*, WebStoreDBInitializer db*/)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //db.Initialize();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
