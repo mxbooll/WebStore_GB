@@ -9,11 +9,11 @@ namespace WebStore_GB.ServiceHosting.Controllers
 {
     [Route(WebApi.ORDERS)]
     [ApiController]
-    public class OrdersApiController1 : ControllerBase, IOrderService
+    public class OrdersApiController : ControllerBase, IOrderService
     {
         private readonly IOrderService _orderService;
 
-        public OrdersApiController1(IOrderService orderService) => _orderService = orderService;
+        public OrdersApiController(IOrderService orderService) => _orderService = orderService;
 
         [HttpPost("{userName}")]
         public Task<OrderDTO> CreateOrder(string userName, [FromBody] CreateOrderModel orderModel) => _orderService.CreateOrder(userName, orderModel);
