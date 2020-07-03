@@ -67,8 +67,14 @@ namespace WebStore_GB.Controllers
             var employee = mapper.Map<Employee>(model);
             //var employee = Model.FromView();
 
-            if (model.Id == 0) { _employeesData.Add(employee); }
-            else { _employeesData.Edit(employee); }
+            if (model.Id == 0) 
+            {
+                _employeesData.Add(employee); 
+            }
+            else 
+            {
+                _employeesData.Edit(employee); 
+            }
 
             _employeesData.SaveChanges();
 

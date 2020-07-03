@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using WebStore_GB.Domain.Entities.Orders;
-using WebStore_GB.Domain.ViewModels;
+using WebStore_GB.Domain.DTO.Order;
 
 namespace WebStore_GB.Interfaces.Services
 {
     public interface IOrderService
     {
-        Task<Order> CreateOrder(string UserName, CartViewModel Cart, OrderViewModel OrderModel);
+        Task<OrderDTO> CreateOrder(string userName, CreateOrderModel orderModel);
 
-        Task<IEnumerable<Order>> GetUserOrders(string UserName);
+        Task<IEnumerable<OrderDTO>> GetUserOrders(string userName);
 
-        Task<Order> GetOrderById(int id);
+        Task<OrderDTO> GetOrderById(int id);
     }
 }

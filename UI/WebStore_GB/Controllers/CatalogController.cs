@@ -29,6 +29,7 @@ namespace WebStore_GB.Controllers
                 SectionId = SectionId,
                 BrandId = BrandId,
                 Products = products
+                    .Select(p => p.FromDTO())
                     .Select(mapper.Map<ProductViewModel>)
                     //.Select(p => Mapper.Map<ProductViewModel>(p))
                     //.ToView()
@@ -43,7 +44,7 @@ namespace WebStore_GB.Controllers
             if (product is null)
                 return NotFound();
 
-            return View(product.ToView());
+            return View(product.FromDTO().ToView());
         }
     }
 }

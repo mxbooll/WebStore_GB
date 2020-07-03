@@ -7,6 +7,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using WebStore_GB.Clients.Employees;
+using WebStore_GB.Clients.Orders;
+using WebStore_GB.Clients.Products;
 using WebStore_GB.Clients.Values;
 using WebStore_GB.Data;
 using WebStore_GB.Domain.Entities.Identity;
@@ -34,7 +37,7 @@ namespace WebStore_GB
 
             services.AddDbContext<WebStoreDB>(opt =>
                 opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddTransient<WebStoreDBInitializer>();
+            //services.AddTransient<WebStoreDBInitializer>();
 
             services.AddIdentity<User, Role>(/*opt => { }*/)
               .AddEntityFrameworkStores<WebStoreDB>()
@@ -75,20 +78,23 @@ namespace WebStore_GB
             services.AddControllersWithViews()
                .AddRazorRuntimeCompilation();
 
-            services.AddScoped<IEmployeesData, SqlEmployeesData>();
+            services.AddScoped<IEmployeesData, EmployeesClient>();
+            //services.AddScoped<IEmployeesData, SqlEmployeesData>();
             //services.AddSingleton<IEmployeesData, InMemoryEmployeesData>();
 
             //services.AddSingleton<IProductData, InMemoryProductData>();
-            services.AddScoped<IProductData, SqlProductData>();
+            //services.AddScoped<IProductData, SqlProductData>();
+            services.AddScoped<IProductData, ProductsClient>();
             services.AddScoped<ICartService, CookiesCartService>();
-            services.AddScoped<IOrderService, SqlOrderService>();
+            services.AddScoped<IOrderService, OrdersClient>();
+            //services.AddScoped<IOrderService, SqlOrderService>();
 
             services.AddTransient<IValueService, ValuesClient>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WebStoreDBInitializer db)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env/*, WebStoreDBInitializer db*/)
         {
-            db.Initialize();
+            //db.Initialize();
 
             if (env.IsDevelopment())
             {
