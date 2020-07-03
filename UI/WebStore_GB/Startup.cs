@@ -2,23 +2,20 @@ using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using WebStore_GB.Clients.Employees;
+using WebStore_GB.Clients.Identity;
 using WebStore_GB.Clients.Orders;
 using WebStore_GB.Clients.Products;
 using WebStore_GB.Clients.Values;
-using WebStore_GB.Data;
 using WebStore_GB.Domain.Entities.Identity;
 using WebStore_GB.Infrastructure.AutoMapperProfiles;
 using WebStore_GB.Interfaces.Services;
 using WebStore_GB.Interfaces.TestApi;
 using WebStore_GB.Services.Products.InCookies;
-using WebStore_GB.Services.Products.InSQL;
-using WevStore_GB.DAL.Context;
 
 namespace WebStore_GB
 {
@@ -35,13 +32,23 @@ namespace WebStore_GB
                 cfg.AddProfile<ViewModelsMapping>();
             }, typeof(Startup));
 
-            services.AddDbContext<WebStoreDB>(opt =>
-                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            //services.AddTransient<WebStoreDBInitializer>();
-
-            services.AddIdentity<User, Role>(/*opt => { }*/)
-              .AddEntityFrameworkStores<WebStoreDB>()
+            services.AddIdentity<User, Role>()          
               .AddDefaultTokenProviders();
+
+            #region WebApi Identity clients stores
+
+            services
+                .AddTransient<IUserStore<User>, UsersClient>()
+                .AddTransient<IUserPasswordStore<User>, UsersClient>()
+                .AddTransient<IUserEmailStore<User>, UsersClient>()
+                .AddTransient<IUserPhoneNumberStore<User>, UsersClient>()
+                .AddTransient<IUserTwoFactorStore<User>, UsersClient>()
+                .AddTransient<IUserClaimStore<User>, UsersClient>()
+                .AddTransient<IUserLoginStore<User>, UsersClient>();
+            services
+                .AddTransient<IRoleStore<Role>, RolesClient>();
+
+            #endregion
 
             services.Configure<IdentityOptions>(opt =>
             {
@@ -53,7 +60,6 @@ namespace WebStore_GB
                 opt.Password.RequireNonAlphanumeric = false;
                 opt.Password.RequiredUniqueChars = 3;
 
-                //opt.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCD1234567890";
                 opt.User.RequireUniqueEmail = false;
 #endif
 
@@ -79,23 +85,14 @@ namespace WebStore_GB
                .AddRazorRuntimeCompilation();
 
             services.AddScoped<IEmployeesData, EmployeesClient>();
-            //services.AddScoped<IEmployeesData, SqlEmployeesData>();
-            //services.AddSingleton<IEmployeesData, InMemoryEmployeesData>();
-
-            //services.AddSingleton<IProductData, InMemoryProductData>();
-            //services.AddScoped<IProductData, SqlProductData>();
             services.AddScoped<IProductData, ProductsClient>();
             services.AddScoped<ICartService, CookiesCartService>();
             services.AddScoped<IOrderService, OrdersClient>();
-            //services.AddScoped<IOrderService, SqlOrderService>();
-
             services.AddTransient<IValueService, ValuesClient>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env/*, WebStoreDBInitializer db*/)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            //db.Initialize();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -106,14 +103,6 @@ namespace WebStore_GB
             app.UseDefaultFiles();
 
             app.UseWelcomePage("/MVC");
-
-            //app.Use(async (context, next) =>
-            //{
-            //    Debug.WriteLine($"Request to {context.Request.Path}");
-            //    await next(); // Можем прервать конвейер не вызывая await next()
-            //    // постобработка
-            //});
-            //app.UseMiddleware<>()
 
             app.UseRouting();
 
