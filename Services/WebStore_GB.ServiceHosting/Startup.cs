@@ -8,7 +8,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using System;
 using System.IO;
-using System.Net;
 using WebStore_GB.Domain.Entities.Identity;
 using WebStore_GB.Interfaces.Services;
 using WebStore_GB.Services.Data;
@@ -65,7 +64,7 @@ namespace WebStore_GB.ServiceHosting
                 {
                     opt.SwaggerDoc("v1", new OpenApiInfo { Title = "WebStore_GB.API", Version = "v1" });
 
-                    // подключить файлы откуда swagger будет получать информацию.
+                    // РїРѕРґРєР»СЋС‡РёС‚СЊ С„Р°Р№Р»С‹ РѕС‚РєСѓРґР° swagger Р±СѓРґРµС‚ РїРѕР»СѓС‡Р°С‚СЊ РёРЅС„РѕСЂРјР°С†РёСЋ.
                     const string WEB_API_XML = "WebStore_GB.ServiceHosting.xml";
                     const string WEB_DOMAIN_XML = "WebStore_GB.Domain.xml";
                     const string DEBUG_PATH = "bin/debug/netcoreapp3.1";
@@ -102,9 +101,9 @@ namespace WebStore_GB.ServiceHosting
             app.UseSwagger();
             app.UseSwaggerUI(opt => 
             {
-                // путь, где будет находится документ с техническим описанием вебапи
+                // РїСѓС‚СЊ, РіРґРµ Р±СѓРґРµС‚ РЅР°С…РѕРґРёС‚СЃСЏ РґРѕРєСѓРјРµРЅС‚ СЃ С‚РµС…РЅРёС‡РµСЃРєРёРј РѕРїРёСЃР°РЅРёРµРј РІРµР±Р°РїРё
                 opt.SwaggerEndpoint("/swagger/v1/swagger.json", "WebStore_GB.API");
-                // путь по которому обратиться к swagger, если string.Empty, то адрес будет "/"
+                // РїСѓС‚СЊ РїРѕ РєРѕС‚РѕСЂРѕРјСѓ РѕР±СЂР°С‚РёС‚СЊСЃСЏ Рє swagger, РµСЃР»Рё string.Empty, С‚Рѕ Р°РґСЂРµСЃ Р±СѓРґРµС‚ "/"
                 opt.RoutePrefix = string.Empty;
             });
 
