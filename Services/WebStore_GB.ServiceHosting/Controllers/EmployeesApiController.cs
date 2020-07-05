@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using WebStore_GB.Domain;
 using WebStore_GB.Domain.Entities.Employees;
@@ -16,8 +17,13 @@ namespace WebStore_GB.ServiceHosting.Controllers
     public class EmployeesApiController : ControllerBase, IEmployeesData
     {
         private readonly IEmployeesData _employeesData;
+        private readonly ILogger<EmployeesApiController> _logger;
 
-        public EmployeesApiController(IEmployeesData employeesData) => _employeesData = employeesData;
+        public EmployeesApiController(IEmployeesData employeesData, ILogger<EmployeesApiController> logger)
+        {
+            _employeesData = employeesData;
+            _logger = logger;
+        }
 
         /// <summary>
         /// Получить всех сотрудников.
@@ -37,12 +43,13 @@ namespace WebStore_GB.ServiceHosting.Controllers
         /// <summary>
         /// Добавление нового сотрудника.
         /// </summary>
-        /// <param name="Employee"> Добавляемый сотрудник. </param>
+        /// <param name="employee"> Добавляемый сотрудник. </param>
         /// <returns> Идентификатор, добавленного сотрудника. </returns>
         [HttpPost]
-        public int Add([FromBody] Employee Employee)
+        public int Add([FromBody] Employee employee)
         {
-            var id = _employeesData.Add(Employee);
+            _logger.LogInformation("Добавление нового сотрудника: [{0}]{1} {2} {3}", employee.Id, employee.Surname, employee.FirstName, employee.Patronymic);
+            var id = _employeesData.Add(employee);
             SaveChanges();
             return id;
         }
@@ -50,11 +57,12 @@ namespace WebStore_GB.ServiceHosting.Controllers
         /// <summary>
         /// Редактирование данных сотрудника.
         /// </summary>
-        /// <param name="Employee"> Редактируемый сотрудник. </param>
+        /// <param name="employee"> Редактируемый сотрудник. </param>
         [HttpPut]
-        public void Edit(Employee Employee)
+        public void Edit(Employee employee)
         {
-            _employeesData.Edit(Employee);
+            _logger.LogInformation("Редактирование сотрудника: [{0}]{1} {2} {3}", employee.Id, employee.Surname, employee.FirstName, employee.Patronymic);
+            _employeesData.Edit(employee);
             SaveChanges();
         }
 
@@ -67,6 +75,7 @@ namespace WebStore_GB.ServiceHosting.Controllers
         [HttpDelete("{id}")]
         public bool Delete(int id)
         {
+            _logger.LogInformation("Удаление сотрудника id:{0}", id);
             var succes = _employeesData.Delete(id);
             SaveChanges();
             return succes;

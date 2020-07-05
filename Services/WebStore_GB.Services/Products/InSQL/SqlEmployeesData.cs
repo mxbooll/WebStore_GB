@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using WebStore_GB.Domain.Entities.Employees;
@@ -10,8 +11,13 @@ namespace WebStore_GB.Services.Products.InSQL
     public class SqlEmployeesData : IEmployeesData
     {
         private readonly WebStoreDB _db;
+        private readonly ILogger<SqlEmployeesData> _logger;
 
-        public SqlEmployeesData(WebStoreDB db) => _db = db;
+        public SqlEmployeesData(WebStoreDB db, ILogger<SqlEmployeesData> logger)
+        {
+            _db = db;
+            _logger = logger;
+        }
 
         public IEnumerable<Employee> Get() => _db.Employees/*.AsEnumerable()*/;
 
