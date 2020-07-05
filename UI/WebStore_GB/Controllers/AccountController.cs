@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 using WebStore_GB.Domain.Entities.Identity;
 using WebStore_GB.Domain.ViewModels.Identity;
@@ -10,11 +13,13 @@ namespace WebStore_GB.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly ILogger<AccountController> _logger;
 
-        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager)
+        public AccountController(UserManager<User> userManager, SignInManager<User> signInManager, ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _logger = logger;
         }
 
         #region Register new user
@@ -30,18 +35,37 @@ namespace WebStore_GB.Controllers
                 UserName = Model.UserName
             };
 
-            var registration_result = await _userManager.CreateAsync(user, Model.Password);
-            if (registration_result.Succeeded)
+            using (_logger.BeginScope("Регистрация нового пользователя {0}", user.UserName))
             {
-                await _userManager.AddToRoleAsync(user, Role.USER);
+                _logger.LogInformation("Начинается процесс регистрации нового пользователя {0}", user.UserName);
 
-                await _signInManager.SignInAsync(user, false);
-                return RedirectToAction("Index", "Home");
+                var registrationResult = await _userManager.CreateAsync(user, Model.Password);
+                if (registrationResult.Succeeded)
+                {
+                    _logger.LogInformation("Пользователь {0} успешно зарегистрирован", user.UserName);
+
+                    var addUserRoleResult = await _userManager.AddToRoleAsync(user, Role.USER);
+                    if (addUserRoleResult.Succeeded)
+                    {
+                        _logger.LogInformation("Пользователю успешно добавлена роль {0}", Role.USER);
+                    }
+                    else
+                    {
+                        _logger.LogError("Ошибка при добавлении пользователю роли {0}: {1}", Role.USER, string.Join(",", addUserRoleResult.Errors.Select(error => error.Description)));
+                        throw new ApplicationException("Ошибка наделения нового пользователя ролью Пользователь");
+                    }
+
+                    await _signInManager.SignInAsync(user, false);
+                    _logger.LogInformation("Пользователь {0} успешно вошел в систему", user.UserName);
+                    return RedirectToAction("Index", "Home");
+                }
+                _logger.LogError("Ошибка при добавлении нового пользователя роли {0}: {1}",
+                         user.UserName, string.Join(",", registrationResult.Errors.Select(error => error.Description)));
+                foreach (var error in registrationResult.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
             }
 
-            foreach (var error in registration_result.Errors)
-                ModelState.AddModelError(string.Empty, error.Description);
-
+            //_Logger.Log(LogLevel.Critical, new EventId(0, "Test"), "QWE", null, (s, e) => s);
             return View(Model);
         }
         #endregion
@@ -62,10 +86,17 @@ namespace WebStore_GB.Controllers
 
             if (login_result.Succeeded)
             {
+                _logger.LogInformation("Пользователь {0} успешно вошел в систему");
                 if (Url.IsLocalUrl(Model.ReturnUrl))
+                {
+                    _logger.LogDebug("Выполняю перенаправление на {0}", Model.ReturnUrl);
                     return Redirect(Model.ReturnUrl);
+                }
+                _logger.LogDebug("Выполняю перенаправление на главную страницу");
                 return RedirectToAction("Index", "Home");
             }
+
+            _logger.LogWarning("Пользователь {0} произвел", Model.ReturnUrl);
 
             ModelState.AddModelError(string.Empty, "Неверное имя пользователя, или пароль!");
 
@@ -75,7 +106,9 @@ namespace WebStore_GB.Controllers
 
         public async Task<IActionResult> Logout()
         {
+            var userName = User.Identity.Name;
             await _signInManager.SignOutAsync();
+            _logger.LogInformation("Пользователь {0} вышел из системы", userName)ж
             return RedirectToAction("Index", "Home");
         }
 
