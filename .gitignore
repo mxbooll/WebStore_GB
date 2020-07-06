@@ -346,3 +346,5 @@ healthchecksdb
 /UI/WebStore_GB/wwwroot/css/site.min.css
 /Services/WebStore_GB.ServiceHosting/WebStore_GB.ServiceHosting.xml
 /Common/WebStore_GB.Domain/WebStore_GB.Domain.xml
+/Services/WebStore_GB.ServiceHosting/Logs
+/UI/WebStore_GB/Logs

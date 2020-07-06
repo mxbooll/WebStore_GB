@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using System;
 using WebStore_GB.Clients.Employees;
 using WebStore_GB.Clients.Identity;
@@ -16,6 +17,8 @@ using WebStore_GB.Infrastructure.AutoMapperProfiles;
 using WebStore_GB.Interfaces.Services;
 using WebStore_GB.Interfaces.TestApi;
 using WebStore_GB.Services.Products.InCookies;
+using WebStore_GB.Logger;
+using WebStore_GB.Infrastructure.Midleware;
 
 namespace WebStore_GB
 {
@@ -91,13 +94,17 @@ namespace WebStore_GB
             services.AddTransient<IValueService, ValuesClient>();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory logger)
         {
+            logger.AddLog4Net();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
             }
+
+            app.UseMiddleware<ErrorHandlingMidleware>();
 
             app.UseStaticFiles();
             app.UseDefaultFiles();
