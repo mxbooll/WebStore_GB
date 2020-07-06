@@ -27,6 +27,7 @@ namespace WebStore_GB
                     .WriteTo.Console(
                     outputTemplate: "[{Timestamp:HH:mm:ss.fff} {Level:u3}]{SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}")
                     .WriteTo.RollingFile($@".\Logs\WebStore-GB[{DateTime.Now:yyyy-MM-ddTHH-mm-ss}].log")
-                    .WriteTo.File(new JsonFormatter(",", true), $@".\Logs\WebStore-GB[{DateTime.Now:yyyy-MM-ddTHH-mm-ss}].log.json"));
+                    .WriteTo.File(new JsonFormatter(",", true), $@".\Logs\WebStore-GB[{DateTime.Now:yyyy-MM-ddTHH-mm-ss}].log.json")
+                    .WriteTo.Seq("http://localhost:5341/"));
     }
 }
