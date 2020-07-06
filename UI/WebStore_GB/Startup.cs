@@ -18,6 +18,7 @@ using WebStore_GB.Interfaces.Services;
 using WebStore_GB.Interfaces.TestApi;
 using WebStore_GB.Services.Products.InCookies;
 using WebStore_GB.Logger;
+using WebStore_GB.Infrastructure.Midleware;
 
 namespace WebStore_GB
 {
@@ -102,6 +103,8 @@ namespace WebStore_GB
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
             }
+
+            app.UseMiddleware<ErrorHandlingMidleware>();
 
             app.UseStaticFiles();
             app.UseDefaultFiles();
