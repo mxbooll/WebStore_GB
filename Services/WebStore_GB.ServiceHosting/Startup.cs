@@ -14,6 +14,7 @@ using WebStore_GB.Interfaces.Services;
 using WebStore_GB.Services.Data;
 using WebStore_GB.Services.Products.InSQL;
 using WevStore_GB.DAL.Context;
+using WebStore_GB.Logger;
 
 namespace WebStore_GB.ServiceHosting
 {
@@ -79,13 +80,15 @@ namespace WebStore_GB.ServiceHosting
                     {
                         opt.IncludeXmlComments(Path.Combine(DEBUG_PATH, WEB_DOMAIN_XML));
                     }
-                }); 
+                });
 
             #endregion
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WebStoreDBInitializer db)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, WebStoreDBInitializer db, ILoggerFactory logger)
         {
+            logger.AddLog4Net();
+
             db.Initialize();
 
             if (env.IsDevelopment())
@@ -100,7 +103,7 @@ namespace WebStore_GB.ServiceHosting
             #region Swagger
 
             app.UseSwagger();
-            app.UseSwaggerUI(opt => 
+            app.UseSwaggerUI(opt =>
             {
                 // путь, где будет находится документ с техническим описанием вебапи
                 opt.SwaggerEndpoint("/swagger/v1/swagger.json", "WebStore_GB.API");

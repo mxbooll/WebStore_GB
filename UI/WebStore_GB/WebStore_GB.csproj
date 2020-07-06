@@ -37,6 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\WebStore_GB.Logger\WebStore_GB.Logger.csproj" />
     <ProjectReference Include="..\..\Services\WebStore_GB.Clients\WebStore_GB.Clients.csproj" />
     <ProjectReference Include="..\..\Services\WebStore_GB.Interfaces\WebStore_GB.Interfaces.csproj" />
     <ProjectReference Include="..\..\Services\WebStore_GB.Services\WebStore_GB.Services.csproj" />
