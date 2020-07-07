@@ -109,8 +109,6 @@ namespace WebStore_GB
             app.UseStaticFiles();
             app.UseDefaultFiles();
 
-            app.UseWelcomePage("/MVC");
-
             app.UseRouting();
 
             app.UseAuthentication();
