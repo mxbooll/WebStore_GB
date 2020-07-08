@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using WebStore_GB.Controllers;
@@ -117,6 +118,23 @@ namespace WebStore_GB.Tests.Controllers
             // Assert
             var exception = Assert.Throws<ApplicationException>(() => controller.Throw(expectedMessage));
             Assert.Equal(expectedMessage, exception.Message);
+        }
+
+        [TestMethod]
+        public void ErrorStatus_404_RedirectTo_Error404()
+        {
+            // Arrange
+            var controller = new HomeController();
+            const string status404 = "404";
+
+            // Act
+            var result = controller.ErrorStatus(status404);
+
+            // Assert
+            //Assert.NotNull(result);
+            var redirectToAction = Assert.IsType<RedirectToActionResult>(result);
+            Assert.Null(redirectToAction.ControllerName);
+            Assert.Equal(nameof(HomeController.Error404), redirectToAction.ActionName);
         }
     }
 }
