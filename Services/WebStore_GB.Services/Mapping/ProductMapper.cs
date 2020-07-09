@@ -29,7 +29,7 @@ namespace WebStore_GB.Services.Mapping
                 Order = p.Order,
                 Price = p.Price,
                 ImageUrl = p.ImageUrl,
-                Barnd = p.Brand.ToDTO(),
+                Brand = p.Brand.ToDTO(),
                 Section = p.Section.ToDTO()
             };
 
@@ -42,8 +42,8 @@ namespace WebStore_GB.Services.Mapping
                 Order = p.Order,
                 Price = p.Price,
                 ImageUrl = p.ImageUrl,
-                BrandId = p.Barnd?.Id,
-                Brand = p.Barnd.FromDTO(),
+                BrandId = p.Brand?.Id,
+                Brand = p.Brand.FromDTO(),
                 Section = p.Section.FromDTO()
             };
     }

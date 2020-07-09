@@ -17,7 +17,7 @@ namespace WebStore_GB.Domain.DTO.Products
 
         public string ImageUrl { get; set; }
 
-        public BrandDTO Barnd { get; set; }
+        public BrandDTO Brand { get; set; }
 
         public SectionDTO Section { get; set; }
     }
