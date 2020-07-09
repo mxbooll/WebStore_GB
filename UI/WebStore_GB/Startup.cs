@@ -19,6 +19,7 @@ using WebStore_GB.Interfaces.TestApi;
 using WebStore_GB.Services.Products.InCookies;
 using WebStore_GB.Logger;
 using WebStore_GB.Infrastructure.Midleware;
+using WebStore_GB.Services.Products;
 
 namespace WebStore_GB
 {
@@ -89,7 +90,8 @@ namespace WebStore_GB
 
             services.AddScoped<IEmployeesData, EmployeesClient>();
             services.AddScoped<IProductData, ProductsClient>();
-            services.AddScoped<ICartService, CookiesCartService>();
+            services.AddScoped<ICartService, CartService>();
+            services.AddScoped<ICartStore, CookiesCartStore>();
             services.AddScoped<IOrderService, OrdersClient>();
             services.AddTransient<IValueService, ValuesClient>();
         }
@@ -108,8 +110,6 @@ namespace WebStore_GB
 
             app.UseStaticFiles();
             app.UseDefaultFiles();
-
-            app.UseWelcomePage("/MVC");
 
             app.UseRouting();
 
