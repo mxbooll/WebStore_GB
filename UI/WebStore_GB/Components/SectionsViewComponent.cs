@@ -17,12 +17,26 @@ namespace WebStore_GB.Components
             _ProductData = ProductData;
         }
 
-        public IViewComponentResult Invoke() => View(GetSections());
+        public IViewComponentResult Invoke(string sectionId)
+        {
+            var id = int.TryParse(sectionId, out var i) ? i : (int?)null;
+
+            var sections = GetSections(id, out var parentSectionId);
+
+            return View(new SelectableSectionsViewModel
+            {
+                Sections = sections,
+                CurrentSectionId = id,
+                ParentSectionId = parentSectionId
+            });
+        }
 
         //public async Task<IViewComponentResult> Invoke() => View();
 
-        private IEnumerable<SectionViewModel> GetSections()
+        private IEnumerable<SectionViewModel> GetSections(int? sectionId, out int? parentSectionId)
         {
+            parentSectionId = null;
+
             var sections = _ProductData.GetSections();
 
             var parent_sections = sections.Where(s => s.ParentId is null);
@@ -36,20 +50,26 @@ namespace WebStore_GB.Components
                 })
                .ToList();
 
-            foreach (var parent_section in parent_Sections_views)
+            foreach (var parentSection in parent_Sections_views)
             {
-                var childs = sections.Where(s => s.ParentId == parent_section.Id);
+                var childs = sections.Where(s => s.ParentId == parentSection.Id);
 
-                foreach (var child_section in childs)
-                    parent_section.ChildSections.Add(new SectionViewModel
+                foreach (var childSection in childs)
+                {
+                    if (childSection.Id == sectionId)
                     {
-                        Id = child_section.Id,
-                        Name = child_section.Name,
-                        Order = child_section.Order,
-                        ParentSection = parent_section
+                        parentSectionId = parentSection.Id;
+                    }
+                    parentSection.ChildSections.Add(new SectionViewModel
+                    {
+                        Id = childSection.Id,
+                        Name = childSection.Name,
+                        Order = childSection.Order,
+                        ParentSection = parentSection
                     });
-                
-                parent_section.ChildSections.Sort((a, b) => Comparer<double>.Default.Compare(a.Order, b.Order));
+                }
+
+                parentSection.ChildSections.Sort((a, b) => Comparer<double>.Default.Compare(a.Order, b.Order));
             }
 
             parent_Sections_views.Sort((a, b) => Comparer<double>.Default.Compare(a.Order, b.Order));

@@ -2,8 +2,8 @@
     @*@await Component.InvokeAsync("Sections")*@
     @*@await Component.InvokeAsync("Brands")*@
     
-    <vc:sections />    
-    <vc:brands />
+    <vc:sections section-id="@Context.Request.Query["SectionId"]"/>    
+    <vc:brands brand-id="@Context.Request.Query["BrandId"]" />
 
     <div class="price-range">
         <!--price-range-->
