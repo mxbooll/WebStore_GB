@@ -26,5 +26,9 @@ namespace WebStore_GB.Services.Products.InMemory
         }
 
         public ProductDTO GetProductById(int id) => TestData.Products.FirstOrDefault(p => p.Id == id).ToDTO();
+
+        public Section GetSection(int id) => TestData.Sections.FirstOrDefault(s => s.Id == id);
+
+        public Brand GetBrand(int id) => TestData.Brands.FirstOrDefault(b => b.Id == id);
     }
 }

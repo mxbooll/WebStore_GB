@@ -42,6 +42,10 @@ namespace WebStore_GB.Services.Products.InSQL
            .Include(p => p.Brand)
            .FirstOrDefault(p => p.Id == id)
            .ToDTO();
+
+        public Section GetSection(int id) => _db.Sections.Include(s => s.ParentSection).FirstOrDefault(s => s.Id == id);
+
+        public Brand GetBrand(int id) => _db.Brands.Find(id);
     }
 }
 
