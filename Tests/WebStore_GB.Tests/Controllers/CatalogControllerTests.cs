@@ -117,8 +117,8 @@ namespace WebStore_GB.Controllers.Tests
             const int EXPECTED_BRAND_ID = 5;
 
             var fakeMapper = new Mock<IMapper>();
-            fakeMapper.Setup(mapper => mapper.Map<ProductViewModel>(It.IsAny<ProductDTO>()))
-               .Returns<ProductDTO>(p => new ProductViewModel
+            fakeMapper.Setup(mapper => mapper.Map<ProductViewModel>(It.IsAny<Product>()))
+               .Returns<Product>(p => new ProductViewModel
                {
                    Id = p.Id,
                    Name = p.Name,
@@ -138,6 +138,8 @@ namespace WebStore_GB.Controllers.Tests
             Assert.Equal(products.Length, model.Products.Count());
             Assert.Equal(EXPECTED_BRAND_ID, model.BrandId);
             Assert.Equal(EXPECTED_SECTION_ID, model.SectionId);
+
+            Assert.Equal(products[0].Brand.Name, model.Products.First().Brand);
         }
     }
 }

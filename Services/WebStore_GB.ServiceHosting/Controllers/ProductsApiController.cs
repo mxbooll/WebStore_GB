@@ -26,5 +26,11 @@ namespace WebStore_GB.ServiceHosting.Controllers
 
         [HttpGet("{id}")]
         public ProductDTO GetProductById(int id) => _productData.GetProductById(id);
+
+        [HttpGet("section/{id}")]
+        public Section GetSection(int id) => _productData.GetSection(id);
+
+        [HttpGet("brand/{id}")]
+        public Brand GetBrand(int id) => _productData.GetBrand(id);
     }
 }
