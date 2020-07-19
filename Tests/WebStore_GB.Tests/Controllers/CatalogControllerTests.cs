@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Linq;
@@ -46,8 +48,10 @@ namespace WebStore_GB.Controllers.Tests
                         Name = $"Section of product {id}"
                     }
                 });
+            var configurationMock = new Mock<IConfiguration>();
+            configurationMock.Setup(cfg => cfg["PageSize"]).Returns("3");
 
-            var controller = new CatalogController(fakeProductData.Object);
+            var controller = new CatalogController(fakeProductData.Object, configurationMock.Object);
 
             // Act
             var result = controller.Details(EXPECTED_PRODUCT_ID);
@@ -109,9 +113,16 @@ namespace WebStore_GB.Controllers.Tests
 
             fakeProductData
                 .Setup(p => p.GetProducts(It.IsAny<ProductFilter>()))
-                .Returns(products);
+                .Returns(new PageProductsDTO
+                {
+                    Products = products,
+                    TotalCount = products.Length
+                });
 
-            var controller = new CatalogController(fakeProductData.Object);
+            var configurationMock = new Mock<IConfiguration>();
+            configurationMock.Setup(cfg => cfg["PageSize"]).Returns("3");
+
+            var controller = new CatalogController(fakeProductData.Object, configurationMock.Object);
 
             const int EXPECTED_SECTION_ID = 1;
             const int EXPECTED_BRAND_ID = 5;
