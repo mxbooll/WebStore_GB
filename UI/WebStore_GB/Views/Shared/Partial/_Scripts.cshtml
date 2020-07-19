@@ -14,15 +14,15 @@
 </environment>
 
 @*asp-append-version="true" - атрибут устанавливает возможность редактирования скрипта, иначе сервер кэширует скрипт*@
-
 <script src="~/js/Cart/CartLogic.js" asp-append-version="true"></script>
+
 <script>
-    $(function () {
+    $(function() {
         Cart.init({
             getCartViewLink: "@Url.Action("GetCartView","Cart")",
-            addToCartLink: "@Url.Action("AddToCartAPI", "Cart")",
-            decrement: "@Url.Action("DecrementFromCartAPI", "Cart")",
-            removeFromCart: "@Url.Action("RemoveFromCartAPI", "Cart")"
+            addToCartLink: "@Url.Action("AddToCartAPI","Cart")",
+            decrementLink: "@Url.Action("DecrementFromCartAPI","Cart")",
+            removeFromCart: "@Url.Action("RemoveFromCartAPI","Cart")"
         });
     })
 </script>
