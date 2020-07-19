@@ -22,7 +22,7 @@ namespace WebStore_GB.ServiceHosting.Controllers
         public IEnumerable<Section> GetSections() => _productData.GetSections();
 
         [HttpPost]
-        public IEnumerable<ProductDTO> GetProducts([FromBody] ProductFilter Filter = null) => _productData.GetProducts(Filter);
+        public PageProductsDTO GetProducts([FromBody] ProductFilter Filter = null) => _productData.GetProducts(Filter);
 
         [HttpGet("{id}")]
         public ProductDTO GetProductById(int id) => _productData.GetProductById(id);

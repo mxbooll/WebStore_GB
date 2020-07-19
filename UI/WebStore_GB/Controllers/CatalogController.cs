@@ -29,10 +29,9 @@ namespace WebStore_GB.Controllers
                 SectionId = SectionId,
                 BrandId = BrandId,
                 Products = products
+                    .Products
                     .Select(p => p.FromDTO())
                     .Select(mapper.Map<ProductViewModel>)
-                    //.Select(p => Mapper.Map<ProductViewModel>(p))
-                    //.ToView()
                     .OrderBy(p => p.Order)
             });
         }

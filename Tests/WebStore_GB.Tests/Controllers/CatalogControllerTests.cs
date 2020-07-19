@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System.Linq;
@@ -109,7 +110,11 @@ namespace WebStore_GB.Controllers.Tests
 
             fakeProductData
                 .Setup(p => p.GetProducts(It.IsAny<ProductFilter>()))
-                .Returns(products);
+                .Returns(new PageProductsDTO
+                {
+                    Products = products,
+                    TotalCount = products.Length
+                });
 
             var controller = new CatalogController(fakeProductData.Object);
 
