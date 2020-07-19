@@ -49,6 +49,8 @@ namespace WebStore_GB.Controllers.Tests
                     }
                 });
             var configurationMock = new Mock<IConfiguration>();
+            configurationMock.Setup(cfg => cfg["PageSize"]).Returns("3");
+
             var controller = new CatalogController(fakeProductData.Object, configurationMock.Object);
 
             // Act
@@ -118,6 +120,8 @@ namespace WebStore_GB.Controllers.Tests
                 });
 
             var configurationMock = new Mock<IConfiguration>();
+            configurationMock.Setup(cfg => cfg["PageSize"]).Returns("3");
+
             var controller = new CatalogController(fakeProductData.Object, configurationMock.Object);
 
             const int EXPECTED_SECTION_ID = 1;
