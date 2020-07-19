@@ -16,7 +16,7 @@
         $(".add-to-cart").click(Cart.addToCart);
         $(".cart_quantity_up").click(Cart.incrementItem);
         $(".cart_quantity_down").click(Cart.decrementItem);
-        //$(".cart_quantity_delete").click(Cart.removeItem);
+        $(".cart_quantity_delete").click(Cart.removeItem);
     },
 
     addToCart: function (event) {
@@ -72,8 +72,8 @@
     decrementItem: function (event) {
         event.preventDefault();
 
-        const button = $(this); // захват кнопки
-        const id = button.data("id"); // data-id="..."
+        const button = $(this);
+        const id = button.data("id");
 
         var container = button.closest("tr");
 
@@ -95,8 +95,18 @@
     removeItem: function (event) {
         event.preventDefault();
 
-        var button = $(this); // захват кнопки
-        const id = button.data("id"); // data-id="..."
+        const button = $(this);
+        const id = button.data("id");
+
+        var container = button.closest("tr");
+
+        $.get(Cart._properties.removeFromCart + "/" + id)
+            .done(function () {
+                button.closest("tr").remove();
+                Cart.refreshTotalPrice();
+                Cart.refreshCartView();
+            })
+            .fail(function () { console.log("removeItem fail"); });
     },
 
     refreshPrice: function (container) {
