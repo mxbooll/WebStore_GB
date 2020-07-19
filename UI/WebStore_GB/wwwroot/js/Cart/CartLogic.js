@@ -15,7 +15,7 @@
     initEvents: function () {
         $(".add-to-cart").click(Cart.addToCart);
         $(".cart_quantity_up").click(Cart.incrementItem);
-        //$(".cart_quantity_down").click(Cart.decrementItem);
+        $(".cart_quantity_down").click(Cart.decrementItem);
         //$(".cart_quantity_delete").click(Cart.removeItem);
     },
 
@@ -28,7 +28,7 @@
         $.get(Cart._properties.addToCartLink + "/" + id)
             .done(function () {
                 Cart.showToolTip(button);
-                Cart.refreshcartView();
+                Cart.refreshCartView();
             })
             .fail(function () { console.log("addToCart fail"); });
     },
@@ -40,19 +40,19 @@
         }, 500)
     },
 
-    refreshcartView: function () {
+    refreshCartView: function () {
         var container = $("#cart-container");
         $.get(Cart._properties.getCartViewLink)
             .done(function (cartHtml) {
                 container.html(cartHtml);
             })
-            .fail(function () { console.log("refreshcartView fail"); });
+            .fail(function () { console.log("refreshCartView fail"); });
     },
 
     incrementItem: function (event) {
         event.preventDefault();
 
-        var button = $(this); // захват кнопки
+        const button = $(this); // захват кнопки
         const id = button.data("id"); // data-id="..."
 
         var container = button.closest("tr"); // находим ближайщий элемент "tr" (родитель)
@@ -64,7 +64,7 @@
 
                 // пересчитываем и изменяем общую стоимость
                 Cart.refreshPrice(container);
-                Cart.refreshcartView();
+                Cart.refreshCartView();
             })
             .fail(function () { console.log("incrementItem fail"); });
     },
@@ -72,8 +72,24 @@
     decrementItem: function (event) {
         event.preventDefault();
 
-        var button = $(this); // захват кнопки
+        const button = $(this); // захват кнопки
         const id = button.data("id"); // data-id="..."
+
+        var container = button.closest("tr");
+
+        $.get(Cart._properties.decrementLink + "/" + id)
+            .done(function () {
+                const count = parseInt($(".cart_quantity_input", container).val());
+                if (count > 1) {
+                    $(".cart_quantity_input", container).val(count - 1)
+                    Cart.refreshPrice(container);
+                } else {
+                    container.remove();
+                    Cart.refreshTotalPrice();
+                }
+                Cart.refreshCartView();
+            })
+            .fail(function () { console.log("decrementItem fail"); });
     },
 
     removeItem: function (event) {
